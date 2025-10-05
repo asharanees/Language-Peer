@@ -1,0 +1,23 @@
+{
+  "enabled": true,
+  "name": "GitHub Presentation Standards",
+  "description": "Monitors repository files and ensures compliance with GitHub presentation standards including README.md, documentation structure, badges, licensing, and proper organization",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "README.md",
+      "LICENSE",
+      "docs/**",
+      "package.json",
+      "*.py",
+      "*.js",
+      "*.ts",
+      "*.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Review the repository structure and files to ensure GitHub presentation standards compliance. Check for: 1) Complete README.md with clear structure and visuals, 2) docs/ folder with architecture and specs, 3) shields.io badges for build status/license/last updated, 4) LICENSE file (preferably MIT), 5) logical folder organization with consistent naming, 6) removal of unused files and test stubs, 7) relevant GitHub topics like 'genai', 'hackathon', 'voice-ui', 'modular-agents', 'aws'. Provide specific recommendations for any missing or incomplete elements."
+  }
+}

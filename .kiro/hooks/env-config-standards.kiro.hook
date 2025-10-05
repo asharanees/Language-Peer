@@ -1,0 +1,21 @@
+{
+  "enabled": true,
+  "name": "Environment Configuration Standards",
+  "description": "Monitors Python files and configuration files to ensure proper environment variable usage, .env file practices, and prevent hardcoded secrets",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "**/*.py",
+      "**/.env*",
+      "**/requirements.txt",
+      "**/.gitignore",
+      "**/config.py",
+      "**/settings.py"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Review the modified files for environment configuration standards compliance. Check for: 1) Hardcoded secrets or sensitive values in Python files, 2) Proper use of python-dotenv or equivalent for loading environment variables, 3) .env files are included in .gitignore, 4) Environment variables are used instead of hardcoded configuration, 5) Proper separation of secrets from source code. Provide specific feedback on violations and suggest corrections following the standards: use .env files for secrets, load with python-dotenv, never hardcode secrets, include .env in .gitignore, and use environment injection for deployment."
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Test Before Task Complete",
+  "description": "Monitors tasks.md for changes and triggers unit test execution before marking tasks as complete",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "tasks.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A task in tasks.md has been modified. Before marking any task as complete, run all relevant unit tests to ensure code quality and functionality. Only proceed to mark the task complete after all tests pass successfully."
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "enabled": true,
+  "name": "Code Explainability Standards",
+  "description": "Monitors code files for changes and ensures they meet explainability standards including docstrings, inline comments, descriptive naming, and modular design",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "**/*.py",
+      "**/*.js",
+      "**/*.ts",
+      "**/*.java",
+      "**/*.cpp",
+      "**/*.c",
+      "**/*.cs",
+      "**/*.go",
+      "**/*.rs",
+      "**/*.rb",
+      "**/*.php"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Review the modified code file and ensure it meets code explainability standards: 1) All functions and classes have comprehensive docstrings explaining purpose, parameters, and return values, 2) Complex logic includes inline comments explaining the rationale, 3) Variable and function names are descriptive and reflect their intent, 4) Magic numbers are replaced with named constants with explanatory comments, 5) AI-generated logic includes summary comments explaining the approach, 6) Code follows modular design principles for readability. If any standards are missing, provide specific suggestions for improvement with examples."
+  }
+}

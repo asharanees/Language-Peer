@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "name": "Python Environment Setup",
+  "description": "Monitors Python files and requirements to ensure virtual environment usage and proper dependency management via venv and requirements.txt.\n",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "*.py",
+      "requirements.txt",
+      "setup.py",
+      "pyproject.toml"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Check if this Python project is using a virtual environment (.venv directory). If not, create one using `python -m venv .venv`. Ensure all Python dependencies are managed via requirements.txt or pip-tools. Verify that no global installs or system-wide packages are being used. If requirements.txt doesn't exist but Python files are present, create one. Activate the virtual environment and install dependencies properly."
+  }
+}

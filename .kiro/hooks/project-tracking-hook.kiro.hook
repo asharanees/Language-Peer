@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Project Tracking and Reporting",
+  "description": "Monitors tasks.md for changes and automatically updates progress-report.md with summaries of completed work, blockers, and next steps. Asks for permission before proceeding to next milestone steps.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "tasks.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "The tasks.md file has been updated. Please analyze the changes and update progress-report.md with a summary of completed work, any blockers identified, and the next steps. Format the report for easy sharing with collaborators. Before proceeding to implement any next steps, ask the user for permission to continue."
+  }
+}
