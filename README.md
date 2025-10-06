@@ -5,9 +5,11 @@
 [![AWS](https://img.shields.io/badge/AWS-Bedrock%20%7C%20Lambda%20%7C%20Transcribe-FF9900?logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![Strands](https://img.shields.io/badge/Strands-AI%20Agents-purple)](https://github.com/strands-ai/strands)
 [![Last Updated](https://img.shields.io/github/last-commit/username/language-peer)](https://github.com/username/language-peer)
 [![Issues](https://img.shields.io/github/issues/username/language-peer)](https://github.com/username/language-peer/issues)
 [![Stars](https://img.shields.io/github/stars/username/language-peer)](https://github.com/username/language-peer/stargazers)
+[![Code Coverage](https://img.shields.io/codecov/c/github/username/language-peer)](https://codecov.io/gh/username/language-peer)
 
 > A voice-first GenAI application that helps language learners build fluency through natural conversations with autonomous AI agents powered by AWS Bedrock and Strands.
 

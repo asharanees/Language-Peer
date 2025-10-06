@@ -2,185 +2,156 @@
 
 Thank you for your interest in contributing to LanguagePeer! This document provides guidelines and information for contributors.
 
-## Code of Conduct
+## 🚀 Getting Started
 
-By participating in this project, you agree to abide by our Code of Conduct. Please be respectful and inclusive in all interactions.
+### Prerequisites
+- Node.js 18+ and npm
+- AWS CLI configured with appropriate permissions
+- AWS CDK v2 installed globally
+- Git
 
-## Getting Started
+### Development Setup
 
-1. **Fork the repository** on GitHub
-2. **Clone your fork** locally:
+1. Fork the repository
+2. Clone your fork:
    ```bash
    git clone https://github.com/your-username/language-peer.git
    cd language-peer
    ```
-3. **Install dependencies**:
+
+3. Install dependencies:
    ```bash
    npm install
    ```
-4. **Set up your environment** following the [deployment guide](docs/deployment-guide.md)
 
-## Development Process
+4. Set up environment variables:
+   ```bash
+   cp .env.example .env.local
+   # Configure your AWS credentials and region
+   ```
 
-### Branch Naming
-
-- `feature/description` - New features
-- `bugfix/description` - Bug fixes
-- `docs/description` - Documentation updates
-- `refactor/description` - Code refactoring
-
-### Commit Messages
-
-Follow conventional commit format:
-```
-type(scope): description
-
-[optional body]
-
-[optional footer]
-```
-
-Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
-
-Examples:
-- `feat(agents): add pronunciation coach personality`
-- `fix(voice): resolve Transcribe streaming timeout`
-- `docs(api): update authentication examples`
-
-### Pull Request Process
-
-1. **Create a feature branch** from `develop`
-2. **Make your changes** with appropriate tests
-3. **Run the test suite**:
+5. Run tests to ensure everything works:
    ```bash
    npm test
-   npm run lint
    ```
-4. **Update documentation** if needed
-5. **Submit a pull request** to `develop` branch
 
-### Pull Request Template
-
-```markdown
-## Description
-Brief description of changes
-
-## Type of Change
-- [ ] Bug fix
-- [ ] New feature
-- [ ] Breaking change
-- [ ] Documentation update
-
-## Testing
-- [ ] Unit tests pass
-- [ ] Integration tests pass
-- [ ] Manual testing completed
-
-## Checklist
-- [ ] Code follows style guidelines
-- [ ] Self-review completed
-- [ ] Documentation updated
-- [ ] No breaking changes (or documented)
-```
-
-## Development Guidelines
-
-### Code Style
-
-- **TypeScript**: Use strict type checking
-- **ESLint**: Follow configured rules
-- **Prettier**: Auto-format code
-- **Comments**: Document complex logic and public APIs
-
-### Testing
-
-- **Unit Tests**: Test individual functions and components
-- **Integration Tests**: Test AWS service integrations
-- **E2E Tests**: Test complete user workflows
-- **Coverage**: Aim for >80% code coverage
-
-### AWS Services
-
-- **Bedrock**: Use appropriate models for different agent personalities
-- **Lambda**: Keep functions small and focused
-- **DynamoDB**: Design efficient query patterns
-- **S3**: Implement proper lifecycle policies
-
-### Voice Processing
-
-- **Transcribe**: Handle confidence scores and alternatives
-- **Polly**: Use SSML for pronunciation guidance
-- **Audio Quality**: Implement quality assessment and feedback
-
-## Project Structure
+## 🏗️ Project Structure
 
 ```
-language-peer/
-├── src/
-│   ├── agents/           # AI agent implementations
-│   ├── backend/          # Lambda functions
-│   ├── frontend/         # React application
-│   ├── infrastructure/   # CDK deployment
-│   └── shared/          # Common utilities
-├── docs/                # Documentation
-├── tests/               # Test files
-└── .github/            # GitHub workflows
+src/
+├── agents/          # AI agent personalities and coordination
+├── backend/         # Serverless backend services
+├── frontend/        # React frontend application
+├── infrastructure/  # AWS CDK infrastructure code
+└── shared/          # Shared types, constants, and utilities
 ```
 
-## Issue Guidelines
+## 🧪 Testing
 
-### Bug Reports
+We maintain high test coverage across all modules:
 
-Include:
+```bash
+# Run all tests
+npm test
+
+# Run specific test suites
+npm run test:backend
+npm run test:frontend
+npm run test:infrastructure
+
+# Run integration tests
+npm run test:integration
+```
+
+## 📝 Code Style
+
+We use ESLint and Prettier for consistent code formatting:
+
+```bash
+# Check linting
+npm run lint
+
+# Fix linting issues
+npm run lint:fix
+
+# Format code
+npm run format
+```
+
+## 🔄 Pull Request Process
+
+1. Create a feature branch from `main`:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+2. Make your changes following our coding standards
+3. Add tests for new functionality
+4. Ensure all tests pass:
+   ```bash
+   npm test
+   ```
+
+5. Update documentation if needed
+6. Commit your changes with a clear message:
+   ```bash
+   git commit -m "feat: add new agent personality for business conversations"
+   ```
+
+7. Push to your fork and create a Pull Request
+
+### PR Requirements
+- [ ] All tests pass
+- [ ] Code follows project style guidelines
+- [ ] Documentation updated (if applicable)
+- [ ] Changes are covered by tests
+- [ ] PR description clearly explains the changes
+
+## 🐛 Bug Reports
+
+When reporting bugs, please include:
 - Clear description of the issue
 - Steps to reproduce
 - Expected vs actual behavior
-- Environment details (OS, Node version, etc.)
-- Error messages and logs
+- Environment details (Node.js version, AWS region, etc.)
+- Relevant logs or error messages
 
-### Feature Requests
+## 💡 Feature Requests
 
-Include:
-- Clear description of the feature
-- Use case and motivation
-- Proposed implementation approach
-- Potential breaking changes
+For new features:
+- Check existing issues to avoid duplicates
+- Provide clear use case and rationale
+- Consider implementation complexity
+- Be open to discussion and feedback
 
-### Labels
+## 🏷️ Commit Message Guidelines
 
-- `bug` - Something isn't working
-- `enhancement` - New feature or request
-- `documentation` - Documentation improvements
-- `good first issue` - Good for newcomers
-- `help wanted` - Extra attention needed
-- `priority:high` - High priority items
+We follow conventional commits:
+- `feat:` new features
+- `fix:` bug fixes
+- `docs:` documentation changes
+- `test:` adding or updating tests
+- `refactor:` code refactoring
+- `chore:` maintenance tasks
 
-## AWS GenAI Hackathon Specific
+## 📚 Documentation
 
-### Requirements Compliance
+- Update README.md for user-facing changes
+- Add inline code comments for complex logic
+- Update API documentation in `docs/api.md`
+- Include examples for new features
 
-Ensure contributions maintain:
-- ✅ **LLM Integration**: AWS Bedrock foundation models
-- ✅ **Required Services**: Bedrock Agents, Transcribe, Polly, etc.
-- ✅ **Autonomous Agents**: Independent reasoning and decision-making
+## 🤝 Community Guidelines
 
-### Demo Considerations
+- Be respectful and inclusive
+- Provide constructive feedback
+- Help others learn and grow
+- Follow our [Code of Conduct](CODE_OF_CONDUCT.md)
 
-- Keep demo scenarios working
-- Test with provided demo credentials
-- Ensure 3-minute demo video remains accurate
+## 📞 Getting Help
 
-## Resources
+- Check existing [issues](https://github.com/username/language-peer/issues)
+- Join our discussions
+- Reach out to maintainers
 
-- [AWS Bedrock Documentation](https://docs.aws.amazon.com/bedrock/)
-- [Strands Agents Framework](https://github.com/strands-ai/strands)
-- [React Documentation](https://reactjs.org/docs/)
-- [AWS CDK Guide](https://docs.aws.amazon.com/cdk/)
-
-## Questions?
-
-- Open an issue for technical questions
-- Check existing issues and discussions
-- Review documentation in the `docs/` folder
-
-Thank you for contributing to LanguagePeer! 🚀
+Thank you for contributing to LanguagePeer! 🎉
