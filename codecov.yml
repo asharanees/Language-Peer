@@ -1,0 +1,20 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 2%
+    patch:
+      default:
+        target: 70%
+
+ignore:
+  - "src/infrastructure/**/*"
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/test-setup.ts"
+
+comment:
+  layout: "reach,diff,flags,tree"
+  behavior: default
+  require_changes: false

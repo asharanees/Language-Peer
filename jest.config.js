@@ -22,7 +22,7 @@ module.exports = {
     'html'
   ],
   setupFilesAfterEnv: ['<rootDir>/src/shared/test-setup.ts'],
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@/shared/(.*)$': '<rootDir>/src/shared/$1',
     '^@/agents/(.*)$': '<rootDir>/src/agents/$1',

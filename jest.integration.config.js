@@ -9,22 +9,20 @@ module.exports = {
   transform: {
     '^.+\\.ts$': 'ts-jest'
   },
+  moduleNameMapping: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '^@/shared/(.*)$': '<rootDir>/src/shared/$1',
+    '^@/agents/(.*)$': '<rootDir>/src/agents/$1',
+    '^@/backend/(.*)$': '<rootDir>/src/backend/$1',
+    '^@/frontend/(.*)$': '<rootDir>/src/frontend/$1',
+    '^@/infrastructure/(.*)$': '<rootDir>/src/infrastructure/$1'
+  },
+  testTimeout: 60000,
+  verbose: true,
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
-    '!src/**/index.ts'
-  ],
-  coverageDirectory: 'coverage/integration',
-  setupFilesAfterEnv: ['<rootDir>/src/shared/test-setup.ts'],
-  moduleNameMapping: {
-    '^@/(.*)$': '<rootDir>/src/$1'
-  },
-  testTimeout: 60000, // Longer timeout for AWS service calls
-  verbose: true,
-  // Only run integration tests
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '\\.unit\\.',
-    '\\.spec\\.'
+    '!src/**/index.ts',
+    '!src/infrastructure/**/*.ts'
   ]
 };

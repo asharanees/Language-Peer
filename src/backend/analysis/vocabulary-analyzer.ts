@@ -611,7 +611,33 @@ export class VocabularyAnalyzer {
 
   private calculateWordAppropriatenessScore(word: string, topic: string): number {
     // Simple scoring based on word relevance to topic
-    return Math.random() * 0.3 + 0.7; // Placeholder implementation
+    // Calculate relevance based on topic keywords and word context
+    const topicKeywords = this.getTopicKeywords(topic);
+    const relevanceScore = topicKeywords.some(keyword => 
+      word.toLowerCase().includes(keyword.toLowerCase()) || 
+      keyword.toLowerCase().includes(word.toLowerCase())
+    ) ? 0.9 : 0.7;
+    
+    return relevanceScore;
+  }
+
+  private getTopicKeywords(topic: string): string[] {
+    const topicKeywordMap: Record<string, string[]> = {
+      'travel': ['journey', 'trip', 'vacation', 'destination', 'flight', 'hotel'],
+      'food': ['meal', 'restaurant', 'cooking', 'recipe', 'ingredient', 'taste'],
+      'work': ['job', 'career', 'office', 'meeting', 'project', 'colleague'],
+      'family': ['parent', 'child', 'sibling', 'relative', 'home', 'love'],
+      'technology': ['computer', 'software', 'internet', 'digital', 'app', 'device']
+    };
+    
+    const lowerTopic = topic.toLowerCase();
+    for (const [key, keywords] of Object.entries(topicKeywordMap)) {
+      if (lowerTopic.includes(key)) {
+        return keywords;
+      }
+    }
+    
+    return [];
   }
 
   private findWordPosition(text: string, word: string, wordIndex: number): { start: number; end: number } {

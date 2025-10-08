@@ -1,0 +1,116 @@
+.toast {
+  position: fixed;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  z-index: var(--z-toast);
+  max-width: 400px;
+  min-width: 300px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  transition: all var(--transition-normal);
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.toast--visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.toast--hidden {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  border-left: 4px solid;
+}
+
+.toast-icon {
+  font-size: 1.25rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.toast-message {
+  flex: 1;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.toast-close {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  transition: all var(--transition-fast);
+}
+
+.toast-close:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* Toast types */
+.toast--success .toast-content {
+  border-left-color: var(--success-color);
+}
+
+.toast--success .toast-icon {
+  color: var(--success-color);
+}
+
+.toast--error .toast-content {
+  border-left-color: var(--error-color);
+}
+
+.toast--error .toast-icon {
+  color: var(--error-color);
+}
+
+.toast--warning .toast-content {
+  border-left-color: var(--warning-color);
+}
+
+.toast--warning .toast-icon {
+  color: var(--warning-color);
+}
+
+.toast--info .toast-content {
+  border-left-color: var(--primary-color);
+}
+
+.toast--info .toast-icon {
+  color: var(--primary-color);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .toast {
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    left: var(--spacing-sm);
+    max-width: none;
+    min-width: auto;
+  }
+  
+  .toast--visible {
+    transform: translateY(0);
+  }
+  
+  .toast--hidden {
+    transform: translateY(-100%);
+  }
+}

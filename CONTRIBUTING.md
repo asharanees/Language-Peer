@@ -15,7 +15,7 @@ Thank you for your interest in contributing to LanguagePeer! This document provi
 1. Fork the repository
 2. Clone your fork:
    ```bash
-   git clone https://github.com/your-username/language-peer.git
+   git clone https://github.com/username/language-peer.git
    cd language-peer
    ```
 

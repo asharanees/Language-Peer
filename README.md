@@ -1,17 +1,32 @@
 # LanguagePeer 🗣️
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/username/language-peer/ci.yml?branch=main)](https://github.com/username/language-peer/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/your-github-username/language-peer/ci.yml?branch=main)](https://github.com/your-github-username/language-peer/actions)
 [![AWS](https://img.shields.io/badge/AWS-Bedrock%20%7C%20Lambda%20%7C%20Transcribe-FF9900?logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![Strands](https://img.shields.io/badge/Strands-AI%20Agents-purple)](https://github.com/strands-ai/strands)
-[![Last Updated](https://img.shields.io/github/last-commit/username/language-peer)](https://github.com/username/language-peer)
-[![Issues](https://img.shields.io/github/issues/username/language-peer)](https://github.com/username/language-peer/issues)
-[![Stars](https://img.shields.io/github/stars/username/language-peer)](https://github.com/username/language-peer/stargazers)
-[![Code Coverage](https://img.shields.io/codecov/c/github/username/language-peer)](https://codecov.io/gh/username/language-peer)
+[![Hackathon](https://img.shields.io/badge/AWS-GenAI%20Hackathon-orange?logo=amazon-aws)](https://aws.amazon.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green?logo=node.js)](https://nodejs.org/)
+[![Last Updated](https://img.shields.io/github/last-commit/your-github-username/language-peer)](https://github.com/your-github-username/language-peer)
+[![Issues](https://img.shields.io/github/issues/your-github-username/language-peer)](https://github.com/your-github-username/language-peer/issues)
+[![Stars](https://img.shields.io/github/stars/your-github-username/language-peer)](https://github.com/your-github-username/language-peer/stargazers)
+[![Code Coverage](https://img.shields.io/codecov/c/github/your-github-username/language-peer)](https://codecov.io/gh/your-github-username/language-peer)
 
 > A voice-first GenAI application that helps language learners build fluency through natural conversations with autonomous AI agents powered by AWS Bedrock and Strands.
+
+## 📋 Table of Contents
+
+- [Overview](#-overview)
+- [Key Features](#-key-features)
+- [Architecture](#️-architecture)
+- [Quick Start](#-quick-start)
+- [Demo](#-demo)
+- [Documentation](#-documentation)
+- [Testing](#-testing)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [AWS GenAI Hackathon](#-aws-genai-hackathon)
 
 ## 🎯 Overview
 
@@ -29,6 +44,8 @@ LanguagePeer addresses the common challenges language learners face: finding con
 ## 🏗️ Architecture
 
 ![Architecture Diagram](docs/architecture-diagram.png)
+
+> **Note**: Architecture diagram PNG is being generated from [Mermaid source](docs/architecture-diagram.md)
 
 LanguagePeer leverages AWS's comprehensive AI/ML services in a serverless, scalable architecture:
 
@@ -52,7 +69,7 @@ LanguagePeer leverages AWS's comprehensive AI/ML services in a serverless, scala
 
 ```bash
 # Clone the repository
-git clone https://github.com/username/language-peer.git
+git clone https://github.com/your-github-username/language-peer.git
 cd language-peer
 
 # Install dependencies
@@ -80,9 +97,22 @@ AWS_PROFILE=your-profile
 
 Experience LanguagePeer in action:
 
-- **Live Demo**: [https://language-peer.demo.aws](https://language-peer.demo.aws)
-- **Demo Video**: [3-minute walkthrough](docs/demo-video.md)
-- **Test Credentials**: Available in [deployment guide](docs/deployment-guide.md)
+- **Demo Video**: [3-minute walkthrough](docs/demo-video.md) showcasing voice interactions
+- **Live Demo**: Deploy your own instance following the [deployment guide](docs/deployment-guide.md)
+- **Screenshots**: See the voice-first interface in the [docs folder](docs/)
+
+### Key Demo Features
+- 🎙️ Real-time voice conversation with AI agents
+- 📊 Live feedback on grammar and pronunciation
+- 🤖 Agent personality switching based on learning needs
+- 📈 Progress tracking and analytics dashboard
+
+### Screenshots
+
+| Voice Interface | Agent Selection | Progress Dashboard |
+|---|---|---|
+| ![Voice Interface](docs/screenshots/voice-interface.png) | ![Agent Selection](docs/screenshots/agent-selection.png) | ![Progress Dashboard](docs/screenshots/progress-dashboard.png) |
+| Real-time voice conversation with visual feedback | Choose from multiple AI personalities | Track learning progress and metrics |
 
 ## 📚 Documentation
 
@@ -107,11 +137,33 @@ npm run test:e2e
 
 ## 🤝 Contributing
 
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Quick Start for Contributors
+
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+3. Make your changes and add tests
+4. Run the test suite (`npm test`)
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+### Development Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Set up environment
+cp .env.example .env.local
+
+# Run tests
+npm test
+
+# Start development server
+npm run dev
+```
 
 ## 📄 License
 

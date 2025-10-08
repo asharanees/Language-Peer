@@ -4,7 +4,6 @@ about: Create a report to help us improve
 title: '[BUG] '
 labels: 'bug'
 assignees: ''
-
 ---
 
 **Describe the bug**
@@ -24,21 +23,10 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Environment (please complete the following information):**
-- OS: [e.g. macOS, Windows, Linux]
-- Node.js version: [e.g. 18.17.0]
-- AWS Region: [e.g. us-east-1]
+- OS: [e.g. iOS]
 - Browser [e.g. chrome, safari]
 - Version [e.g. 22]
-
-**AWS Services**
-- Which AWS services are involved? [e.g. Bedrock, Transcribe, Polly]
-- Any specific error messages from AWS services?
+- AWS Region [e.g. us-east-1]
 
 **Additional context**
 Add any other context about the problem here.
-
-**Logs**
-If applicable, add relevant log outputs:
-```
-Paste logs here
-```

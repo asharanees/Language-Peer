@@ -371,3 +371,5 @@ Tutor:`;
     }
   }
 }
+// Export alias for backward compatibility
+export { BedrockService as BedrockClient };

@@ -1,77 +1,104 @@
 // Shared utility functions for LanguagePeer
 
-import { LanguageLevel, DifficultyLevel } from '../types';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
- * Generate a unique session ID
+ * Generate unique session ID
  */
 export function generateSessionId(): string {
-  const timestamp = Date.now().toString(36);
-  const randomStr = Math.random().toString(36).substring(2, 8);
-  return `session_${timestamp}_${randomStr}`;
+  return `session_${uuidv4()}`;
 }
 
 /**
- * Generate a unique message ID
+ * Generate unique message ID
  */
 export function generateMessageId(): string {
-  const timestamp = Date.now().toString(36);
-  const randomStr = Math.random().toString(36).substring(2, 8);
-  return `msg_${timestamp}_${randomStr}`;
+  return `msg_${uuidv4()}`;
 }
 
 /**
- * Generate a unique user ID
+ * Generate unique user ID
  */
 export function generateUserId(): string {
-  const timestamp = Date.now().toString(36);
-  const randomStr = Math.random().toString(36).substring(2, 10);
-  return `user_${timestamp}_${randomStr}`;
+  return `user_${uuidv4()}`;
 }
 
 /**
- * Convert language level to numeric value for calculations
+ * Sanitize text content for safe display
  */
-export function languageLevelToNumber(level: LanguageLevel): number {
-  const levelMap: Record<LanguageLevel, number> = {
-    'beginner': 1,
-    'elementary': 2,
-    'intermediate': 3,
-    'upper-intermediate': 4,
-    'advanced': 5,
-    'proficient': 6
+export function sanitizeText(text: string): string {
+  return text
+    .replace(/[<>]/g, '') // Remove potential HTML tags
+    .replace(/\s+/g, ' ') // Normalize whitespace
+    .trim();
+}
+
+/**
+ * Calculate streak days from session dates
+ */
+export function calculateStreak(sessionDates: Date[]): number {
+  if (sessionDates.length === 0) return 0;
+  
+  const sortedDates = sessionDates
+    .map(date => new Date(date.getFullYear(), date.getMonth(), date.getDate()))
+    .sort((a, b) => b.getTime() - a.getTime());
+  
+  let streak = 1;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  // Check if most recent session was today or yesterday
+  const mostRecent = sortedDates[0];
+  const daysDiff = Math.floor((today.getTime() - mostRecent.getTime()) / (1000 * 60 * 60 * 24));
+  
+  if (daysDiff > 1) return 0; // Streak broken
+  
+  // Count consecutive days
+  for (let i = 1; i < sortedDates.length; i++) {
+    const current = sortedDates[i];
+    const previous = sortedDates[i - 1];
+    const diff = Math.floor((previous.getTime() - current.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (diff === 1) {
+      streak++;
+    } else {
+      break;
+    }
+  }
+  
+  return streak;
+}
+
+/**
+ * Get random topic from available topics
+ */
+export function getRandomTopic(topics: readonly string[]): string {
+  return topics[Math.floor(Math.random() * topics.length)];
+}
+
+/**
+ * Create standardized error response
+ */
+export function createErrorResponse(message: string, code?: string) {
+  return {
+    success: false,
+    error: {
+      message,
+      code: code || 'UNKNOWN_ERROR',
+      timestamp: new Date().toISOString()
+    }
   };
-  return levelMap[level];
 }
 
 /**
- * Convert numeric value back to language level
+ * Create standardized success response
  */
-export function numberToLanguageLevel(num: number): LanguageLevel {
-  const levels: LanguageLevel[] = [
-    'beginner', 'elementary', 'intermediate', 
-    'upper-intermediate', 'advanced', 'proficient'
-  ];
-  const index = Math.max(0, Math.min(levels.length - 1, Math.floor(num) - 1));
-  return levels[index];
-}
-
-/**
- * Calculate difficulty adjustment based on user performance
- */
-export function calculateDifficultyAdjustment(
-  currentLevel: LanguageLevel,
-  recentPerformance: number[]
-): DifficultyLevel {
-  if (recentPerformance.length === 0) return 'medium';
-  
-  const avgPerformance = recentPerformance.reduce((a, b) => a + b, 0) / recentPerformance.length;
-  const levelNum = languageLevelToNumber(currentLevel);
-  
-  // Adjust based on performance and current level
-  if (avgPerformance > 0.8 && levelNum >= 3) return 'hard';
-  if (avgPerformance < 0.5 || levelNum <= 2) return 'easy';
-  return 'medium';
+export function createSuccessResponse<T>(data: T) {
+  return {
+    success: true,
+    data,
+    timestamp: new Date().toISOString()
+  };
 }
 
 /**
@@ -92,37 +119,6 @@ export function formatDuration(milliseconds: number): string {
 }
 
 /**
- * Calculate confidence score from multiple metrics
- */
-export function calculateConfidenceScore(metrics: {
-  transcriptionConfidence?: number;
-  grammarScore?: number;
-  fluencyScore?: number;
-  vocabularyScore?: number;
-}): number {
-  const scores = [
-    metrics.transcriptionConfidence || 0,
-    metrics.grammarScore || 0,
-    metrics.fluencyScore || 0,
-    metrics.vocabularyScore || 0
-  ].filter(score => score > 0);
-  
-  if (scores.length === 0) return 0;
-  return scores.reduce((a, b) => a + b, 0) / scores.length;
-}
-
-/**
- * Sanitize text for safe processing
- */
-export function sanitizeText(text: string): string {
-  return text
-    .trim()
-    .replace(/[<>]/g, '') // Remove potential HTML tags
-    .replace(/\s+/g, ' ') // Normalize whitespace
-    .substring(0, 1000); // Limit length
-}
-
-/**
  * Validate email format
  */
 export function isValidEmail(email: string): boolean {
@@ -131,80 +127,53 @@ export function isValidEmail(email: string): boolean {
 }
 
 /**
- * Generate a random topic from predefined list
+ * Debounce function calls
  */
-export function getRandomTopic(): string {
-  const topics = [
-    'Travel and Culture',
-    'Food and Cooking',
-    'Hobbies and Interests',
-    'Work and Career',
-    'Family and Friends',
-    'Technology and Innovation',
-    'Health and Fitness',
-    'Entertainment and Media',
-    'Education and Learning',
-    'Environment and Nature'
-  ];
-  return topics[Math.floor(Math.random() * topics.length)];
+export function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeout: NodeJS.Timeout;
+  
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
 }
 
 /**
- * Calculate streak days from session dates
+ * Throttle function calls
  */
-export function calculateStreak(sessionDates: Date[]): number {
-  if (sessionDates.length === 0) return 0;
+export function throttle<T extends (...args: any[]) => any>(
+  func: T,
+  limit: number
+): (...args: Parameters<T>) => void {
+  let inThrottle: boolean;
   
-  // Sort dates in descending order
-  const sortedDates = sessionDates
-    .map(date => new Date(date.getFullYear(), date.getMonth(), date.getDate()))
-    .sort((a, b) => b.getTime() - a.getTime());
-  
-  let streak = 0;
-  let currentDate = new Date();
-  currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-  
-  for (const sessionDate of sortedDates) {
-    const daysDiff = Math.floor((currentDate.getTime() - sessionDate.getTime()) / (1000 * 60 * 60 * 24));
-    
-    if (daysDiff === streak) {
-      streak++;
-    } else if (daysDiff > streak) {
-      break;
+  return (...args: Parameters<T>) => {
+    if (!inThrottle) {
+      func(...args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
     }
+  };
+}
+
+/**
+ * Deep clone an object
+ */
+export function deepClone<T>(obj: T): T {
+  if (obj === null || typeof obj !== 'object') return obj;
+  if (obj instanceof Date) return new Date(obj.getTime()) as unknown as T;
+  if (obj instanceof Array) return obj.map(item => deepClone(item)) as unknown as T;
+  if (typeof obj === 'object') {
+    const clonedObj = {} as T;
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        clonedObj[key] = deepClone(obj[key]);
+      }
+    }
+    return clonedObj;
   }
-  
-  return streak;
-}
-
-/**
- * Validate AWS region format
- */
-export function isValidAwsRegion(region: string): boolean {
-  const regionRegex = /^[a-z]{2}-[a-z]+-\d{1}$/;
-  return regionRegex.test(region);
-}
-
-/**
- * Create error response object
- */
-export function createErrorResponse(message: string, code?: string) {
-  return {
-    error: true,
-    message,
-    code: code || 'UNKNOWN_ERROR',
-    timestamp: new Date().toISOString()
-  };
-}
-
-/**
- * Create success response object
- */
-export function createSuccessResponse<T>(data: T, message?: string) {
-  return {
-    success: true,
-    data,
-    message: message || 'Operation completed successfully',
-    timestamp: new Date().toISOString()
-  };
+  return obj;
 }

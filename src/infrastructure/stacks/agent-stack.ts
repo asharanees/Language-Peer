@@ -11,11 +11,12 @@ export interface AgentStackProps extends cdk.StackProps {
 export class AgentStack extends cdk.Stack {
   public readonly bedrockRole: iam.Role;
   public readonly analyticsStream: kinesis.Stream;
+  public readonly agentLogGroup: logs.LogGroup;
 
   constructor(scope: Construct, id: string, props: AgentStackProps) {
     super(scope, id, props);
 
-    // IAM role for Bedrock and Strands agents
+    // IAM role for Bedrock agents and AI services
     this.bedrockRole = new iam.Role(this, 'BedrockAgentRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
       managedPolicies: [
@@ -24,7 +25,7 @@ export class AgentStack extends cdk.Stack {
       inlinePolicies: {
         BedrockAccess: new iam.PolicyDocument({
           statements: [
-            // Bedrock model access
+            // Bedrock foundation model access
             new iam.PolicyStatement({
               effect: iam.Effect.ALLOW,
               actions: [
@@ -50,6 +51,16 @@ export class AgentStack extends cdk.Stack {
                 'bedrock:InvokeAgent'
               ],
               resources: ['*']
+            }),
+            // Kinesis analytics stream access
+            new iam.PolicyStatement({
+              effect: iam.Effect.ALLOW,
+              actions: [
+                'kinesis:PutRecord',
+                'kinesis:PutRecords',
+                'kinesis:DescribeStream'
+              ],
+              resources: [this.analyticsStream?.streamArn || '*']
             })
           ]
         })
@@ -61,17 +72,11 @@ export class AgentStack extends cdk.Stack {
       streamName: `LanguagePeer-Analytics-${props.environment}`,
       shardCount: 1,
       retentionPeriod: cdk.Duration.days(7),
-      encryption: kinesis.StreamEncryption.MANAGED
+      encryption: kinesis.StreamEncryption.KMS,
+      encryptionKey: undefined // Use default KMS key
     });
 
-    // CloudWatch log group for agent activities
-    const agentLogGroup = new logs.LogGroup(this, 'AgentLogGroup', {
-      logGroupName: `/aws/lambda/language-peer-agents-${props.environment}`,
-      retention: logs.RetentionDays.ONE_WEEK,
-      removalPolicy: cdk.RemovalPolicy.DESTROY
-    });
-
-    // Add Kinesis permissions to Bedrock role
+    // Update the Bedrock role to include the analytics stream ARN
     this.bedrockRole.addToPolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
@@ -83,6 +88,13 @@ export class AgentStack extends cdk.Stack {
         resources: [this.analyticsStream.streamArn]
       })
     );
+
+    // CloudWatch log group for agent activities
+    this.agentLogGroup = new logs.LogGroup(this, 'AgentLogGroup', {
+      logGroupName: `/aws/lambda/language-peer-agents-${props.environment}`,
+      retention: logs.RetentionDays.ONE_WEEK,
+      removalPolicy: cdk.RemovalPolicy.DESTROY
+    });
 
     // Output important values
     new cdk.CfnOutput(this, 'BedrockRoleArn', {
@@ -96,7 +108,7 @@ export class AgentStack extends cdk.Stack {
     });
 
     new cdk.CfnOutput(this, 'AgentLogGroupName', {
-      value: agentLogGroup.logGroupName,
+      value: this.agentLogGroup.logGroupName,
       description: 'CloudWatch log group for agent activities'
     });
   }

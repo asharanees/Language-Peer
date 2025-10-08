@@ -1,3 +1,19 @@
-# Placeholder for architecture diagram PNG
-# Generate using: mmdc -i docs/architecture-diagram.md -o docs/architecture-diagram.png
-# Or create manually and place here
+This file should contain the architecture diagram PNG.
+
+To generate from the Mermaid source:
+1. Install mermaid-cli: npm install -g @mermaid-js/mermaid-cli
+2. Run: mmdc -i docs/architecture-diagram.md -o docs/architecture-diagram.png
+
+Or create manually using tools like:
+- Draw.io
+- Lucidchart  
+- AWS Architecture Icons
+- Figma
+
+The diagram should show:
+- Frontend (React) → API Gateway → Lambda
+- Lambda → Bedrock (Claude, Llama, Nova)
+- Lambda → Transcribe/Polly for voice processing
+- Lambda → DynamoDB for data storage
+- Lambda → Kinesis for analytics
+- S3 for audio file storage

@@ -1,0 +1,214 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  font-family: inherit;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.button:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Sizes */
+.button--small {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: 0.875rem;
+  min-height: 32px;
+}
+
+.button--medium {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: 1rem;
+  min-height: 40px;
+}
+
+.button--large {
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: 1.125rem;
+  min-height: 48px;
+}
+
+/* Variants */
+.button--primary {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.button--primary:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.button--secondary {
+  background-color: var(--secondary-color);
+  color: white;
+  border-color: var(--secondary-color);
+}
+
+.button--secondary:hover:not(:disabled) {
+  background-color: #475569;
+  border-color: #475569;
+}
+
+.button--outline {
+  background-color: transparent;
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.button--outline:hover:not(:disabled) {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.button--ghost {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border-color: transparent;
+}
+
+.button--ghost:hover:not(:disabled) {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.button--danger {
+  background-color: var(--error-color);
+  color: white;
+  border-color: var(--error-color);
+}
+
+.button--danger:hover:not(:disabled) {
+  background-color: #dc2626;
+  border-color: #dc2626;
+}
+
+/* Full width */
+.button--full-width {
+  width: 100%;
+}
+
+/* Loading state */
+.button--loading {
+  color: transparent;
+}
+
+.button-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.button--small .spinner {
+  width: 14px;
+  height: 14px;
+}
+
+.button--large .spinner {
+  width: 18px;
+  height: 18px;
+}
+
+/* Icons */
+.button-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.button-icon--left {
+  margin-left: calc(var(--spacing-xs) * -1);
+}
+
+.button-icon--right {
+  margin-right: calc(var(--spacing-xs) * -1);
+}
+
+/* Voice-specific button styles */
+.button--voice {
+  border-radius: var(--radius-full);
+  min-width: 60px;
+  min-height: 60px;
+  font-size: 1.5rem;
+}
+
+.button--voice.button--small {
+  min-width: 48px;
+  min-height: 48px;
+  font-size: 1.25rem;
+}
+
+.button--voice.button--large {
+  min-width: 80px;
+  min-height: 80px;
+  font-size: 2rem;
+}
+
+/* Recording state */
+.button--recording {
+  animation: recording-pulse 1s infinite;
+}
+
+@keyframes recording-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+  
+  .spinner {
+    animation: none;
+  }
+  
+  .button--recording {
+    animation: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .button {
+    border-width: 2px;
+  }
+  
+  .button--ghost {
+    border-color: currentColor;
+  }
+}

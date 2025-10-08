@@ -1,0 +1,91 @@
+/* App-specific styles */
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary);
+}
+
+.app-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: var(--spacing-lg);
+  background-color: var(--bg-primary);
+}
+
+.app-loading p {
+  color: var(--text-secondary);
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* Allow flex child to shrink */
+}
+
+/* Page transitions */
+.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--transition-normal), transform var(--transition-normal);
+}
+
+.page-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity var(--transition-normal), transform var(--transition-normal);
+}
+
+/* Voice-first design adjustments */
+.voice-focused {
+  /* Larger touch targets for voice-first interface */
+}
+
+.voice-focused button {
+  min-height: 48px;
+  min-width: 48px;
+}
+
+.voice-focused input,
+.voice-focused textarea {
+  min-height: 48px;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .app-main {
+    padding: 0;
+  }
+}
+
+/* Dark mode support (future enhancement) */
+@media (prefers-color-scheme: dark) {
+  .app {
+    background-color: var(--bg-dark);
+    color: var(--text-inverse);
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .app {
+    border: 2px solid var(--text-primary);
+  }
+}

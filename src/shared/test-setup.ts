@@ -1,39 +1,28 @@
-// Jest test setup for LanguagePeer
+// Test setup for LanguagePeer application
 
-// Mock AWS SDK clients for testing
+// Mock AWS SDK modules globally
+jest.mock('@aws-sdk/client-kinesis');
 jest.mock('@aws-sdk/client-bedrock-runtime');
 jest.mock('@aws-sdk/client-transcribe');
 jest.mock('@aws-sdk/client-polly');
 jest.mock('@aws-sdk/client-comprehend');
 jest.mock('@aws-sdk/client-dynamodb');
 jest.mock('@aws-sdk/client-s3');
-jest.mock('@aws-sdk/client-kinesis');
+jest.mock('@aws-sdk/lib-dynamodb');
 
-// Set test environment variables
+// Mock environment variables
 process.env.AWS_REGION = 'us-east-1';
-process.env.ENVIRONMENT = 'test';
-process.env.USER_TABLE_NAME = 'LanguagePeer-Users-test';
-process.env.SESSION_TABLE_NAME = 'LanguagePeer-Sessions-test';
-process.env.AUDIO_BUCKET_NAME = 'languagepeer-audio-test';
-process.env.ANALYTICS_STREAM_NAME = 'LanguagePeer-Analytics-test';
+process.env.NODE_ENV = 'test';
 
-// Global test utilities
-global.console = {
-  ...console,
-  // Suppress console.log in tests unless explicitly needed
-  log: jest.fn(),
-  debug: jest.fn(),
-  info: jest.fn(),
-  warn: console.warn,
-  error: console.error,
-};
+// Global test utilities - console available for debugging
 
-// Mock timers for consistent testing
+// Setup fake timers for consistent testing
 beforeEach(() => {
   jest.useFakeTimers();
 });
 
 afterEach(() => {
+  jest.runOnlyPendingTimers();
   jest.useRealTimers();
   jest.clearAllMocks();
 });

@@ -109,7 +109,7 @@ export interface AgentPersonality {
   id: string;
   name: string;
   traits: string[];
-  conversationStyle: string;
+  conversationStyle: 'friendly-tutor' | 'strict-teacher' | 'conversation-partner' | 'pronunciation-coach';
   supportiveApproach: {
     errorHandling: string;
     encouragementFrequency: string;
@@ -129,7 +129,14 @@ export interface AgentPersonality {
 export interface ConversationContext {
   sessionId: string;
   userId: string;
-  conversationHistory: ConversationMessage[];
+  conversationHistory: Array<{
+    role: 'user' | 'assistant';
+    content: string;
+    sender?: 'user' | 'agent';
+    timestamp?: Date;
+    messageId?: string;
+    transcriptionConfidence?: number;
+  }>;
   userProfile?: UserProfile;
   currentTopic?: string;
 }
@@ -169,4 +176,58 @@ export interface SendMessageResponse {
   audioUrl?: string;
   feedback?: FeedbackInstance[];
   analysis?: LanguageAnalysis;
+}
+
+export interface TranscriptionResult {
+  transcript: string;
+  confidence: number;
+  languageCode: string;
+  alternatives: TranscriptAlternative[];
+}
+
+export interface TranscriptAlternative {
+  transcript: string;
+  confidence: number;
+  startTime: Date;
+  endTime?: Date;
+}
+
+// Additional types for voice processing
+export interface AudioMetadata {
+  originalName: string;
+  contentType: string;
+  size: number;
+  duration: number;
+  sampleRate: number;
+  channels: number;
+  uploadedAt: Date;
+  userId: string;
+  sessionId: string;
+}
+
+export interface AudioUploadResult {
+  audioUrl: string;
+  audioKey: string;
+  uploadId: string;
+  expiresAt: Date;
+}
+
+// Emotional state types for agent adaptation
+export interface EmotionalState {
+  frustrationLevel: number;
+  confidenceLevel: number;
+  engagementLevel: number;
+  lastInteractionTime: Date;
+}
+
+export interface FrustrationLevel {
+  level: number;
+  indicators: string[];
+  recommendedActions: string[];
+}
+
+export interface MotivationalMessage {
+  message: string;
+  type: 'encouragement' | 'milestone' | 'progress' | 'reassurance';
+  personalizedElements: string[];
 }
