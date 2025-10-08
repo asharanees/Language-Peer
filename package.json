@@ -77,7 +77,7 @@
     "@aws-sdk/client-transcribe-streaming": "^3.450.0",
     "@aws-sdk/client-polly": "^3.450.0",
     "@aws-sdk/client-comprehend": "^3.450.0",
-    "@aws-sdk/client-dynamodb": "^3.450.0",
+    "@aws-sdk/client-dynamodb": "^3.906.0",
     "@aws-sdk/client-s3": "^3.450.0",
     "@aws-sdk/s3-request-presigner": "^3.450.0",
     "@aws-sdk/client-kinesis": "^3.450.0",
