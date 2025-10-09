@@ -6,7 +6,7 @@
 echo "Setting up GitHub repository topics for LanguagePeer..."
 
 # Replace 'username/language-peer' with your actual repository
-REPO="username/language-peer"
+REPO="your-github-username/language-peer"
 
 # Primary topics (required for hackathon)
 gh api repos/$REPO/topics -X PUT -f names='["genai","hackathon","voice-ui","modular-agents","aws","aws-bedrock","language-learning","ai-agents","strands","typescript","serverless","transcribe","polly","comprehend","dynamodb","lambda","voice-first","conversation-ai","language-practice","speech-recognition","text-to-speech","real-time-feedback","aws-cdk","react","nodejs","jest"]'

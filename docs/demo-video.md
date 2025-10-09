@@ -19,4 +19,12 @@ See [demo-video-script.md](demo-video-script.md) for the complete 3-minute demo 
 
 ---
 
-*Demo video will be available before hackathon submission deadline.*
+## Status: In Production
+
+The demo video is currently being produced and will showcase:
+- Real-time voice conversation with AI agents
+- Agent personality switching
+- Live feedback and progress tracking
+- End-to-end autonomous agent workflow
+
+**Target completion**: Before hackathon submission deadline
