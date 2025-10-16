@@ -328,6 +328,20 @@ aws sns list-topics
 aws logs describe-log-groups --log-group-name-prefix "/aws/languagepeer"
 ```
 
+### 5. Frontend Asset Verification
+```bash
+# Test frontend deployment
+curl -I "https://your-cloudfront-url.cloudfront.net/"
+
+# Verify manifest.json
+curl -I "https://your-cloudfront-url.cloudfront.net/manifest.json"
+
+# Check font loading (should be fast with preconnect)
+curl -I "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+```
+
+**Note**: LanguagePeer uses a minimal asset approach without favicon or icon files. This simplifies deployment and reduces load times. See [Frontend Assets Guide](frontend-assets.md) for details.
+
 ## Running Tests
 
 ### Unit Tests

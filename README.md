@@ -232,6 +232,14 @@ Experience LanguagePeer in action:
 
 > **Note**: Screenshots show the actual deployed interface. See our [deployment guide](docs/deployment-guide.md) to create your own instance.
 
+### Frontend Assets
+
+The application uses a minimal asset approach:
+- **No favicon**: Simplified deployment without icon dependencies
+- **Web App Manifest**: Basic PWA support via `manifest.json`
+- **Font Loading**: Google Fonts (Inter) preloaded for optimal performance
+- **Voice Permissions**: Microphone access configured via permissions policy
+
 ## 📚 Documentation
 
 ### Core Documentation
@@ -250,6 +258,7 @@ Experience LanguagePeer in action:
 - 🛠️ [Manual Setup Guide](docs/manual-inputs-guide.md) - Step-by-step manual configuration
 - 🤖 [Automated Deployment](docs/automated-deployment.md) - One-click deployment process
 - 🧪 [Testing Guide](docs/testing-guide.md) - Testing procedures and best practices
+- 🎨 [Frontend Assets](docs/frontend-assets.md) - Asset management and configuration
 
 ### Demo and Examples
 - 🎥 [Demo Video](docs/demo-video.md) - 3-minute walkthrough and production guide
