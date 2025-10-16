@@ -5,16 +5,10 @@ frontend:
       commands:
         - node --version
         - npm --version
-        - ls -la
-        - ls -la src/
-        - cd src/frontend
-        - pwd
-        - npm ci
+        - cd src/frontend && npm ci
     build:
       commands:
-        - cd src/frontend
-        - pwd
-        - npm run build
+        - cd src/frontend && npm run build
   artifacts:
     baseDirectory: src/frontend/build
     files:
