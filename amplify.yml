@@ -8,7 +8,7 @@ frontend:
         - cd src/frontend && npm ci
     build:
       commands:
-        - cd src/frontend && npm run build
+        - cd $CODEBUILD_SRC_DIR/src/frontend && npm run build
   artifacts:
     baseDirectory: src/frontend/build
     files:
