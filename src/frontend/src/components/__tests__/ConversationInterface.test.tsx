@@ -255,8 +255,8 @@ describe('ConversationInterface Component', () => {
   it('applies custom className', () => {
     render(<ConversationInterface {...mockProps} className="custom-interface" />);
     
-    const interface = document.querySelector('.conversation-interface.custom-interface');
-    expect(interface).toBeInTheDocument();
+    const interfaceElement = document.querySelector('.conversation-interface.custom-interface');
+    expect(interfaceElement).toBeInTheDocument();
   });
 
   it('shows different greetings for different agent personalities', () => {

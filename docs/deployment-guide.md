@@ -1,11 +1,59 @@
 # LanguagePeer Deployment Guide
 
+## Quick Start - Automated Setup & Deployment (Recommended)
+
+For fully automated setup and deployment with minimal user interaction:
+
+### Step 1: Configuration Setup
+```bash
+# Interactive configuration (first time only)
+./scripts/setup-config.sh
+```
+
+This will guide you through:
+- GitHub repository configuration
+- AWS credentials and region setup
+- Domain names (optional)
+- Environment selection
+
+### Step 2: Automated Deployment
+```bash
+# Deploy to development (default)
+./scripts/auto-deploy.sh
+
+# Deploy to specific environment
+./scripts/auto-deploy.sh staging
+
+# Force deployment (skip verification checks)
+./scripts/auto-deploy.sh production true
+```
+
+### What the Scripts Handle
+
+**Configuration Script (`setup-config.sh`):**
+- ✅ Interactive prompts for all required settings
+- ✅ GitHub repository validation
+- ✅ AWS credentials verification
+- ✅ File updates with your actual values
+- ✅ Environment file generation
+- ✅ Configuration summary creation
+
+**Deployment Script (`auto-deploy.sh`):**
+- ✅ Automatic prerequisite installation (Node.js, AWS CLI, CDK)
+- ✅ AWS service access verification
+- ✅ Dependency installation with retry logic
+- ✅ Comprehensive test suite execution
+- ✅ CDK bootstrapping with error handling
+- ✅ Progress tracking during deployment
+- ✅ Post-deployment verification
+- ✅ Detailed deployment report generation
+
 ## Prerequisites
 
 ### 1. AWS Account Setup
 - AWS Account with appropriate permissions
-- AWS CLI installed and configured
-- AWS CDK v2 installed globally: `npm install -g aws-cdk`
+- AWS CLI installed and configured (auto-installed by script if missing)
+- AWS CDK v2 installed globally (auto-installed by script if missing)
 
 ### 2. Required AWS Services Access
 Ensure your AWS account has access to:
@@ -22,11 +70,77 @@ Ensure your AWS account has access to:
 - AWS CodePipeline (for staging/production)
 
 ### 3. Local Development Environment
-- Node.js 18+ and npm
+- Node.js 18+ and npm (auto-installed by script if missing)
 - Git
 - Docker (optional, for local testing)
 
-## Step-by-Step Deployment
+## Automated Deployment Options
+
+### Basic Usage
+```bash
+./scripts/auto-deploy.sh [environment] [force_deploy]
+```
+
+### Examples
+```bash
+# Deploy to development with automatic checks
+./scripts/auto-deploy.sh
+
+# Deploy to development, forcing through any issues
+./scripts/auto-deploy.sh development true
+
+# Deploy to staging with verification
+./scripts/auto-deploy.sh staging false
+
+# Deploy to production (requires confirmation unless forced)
+./scripts/auto-deploy.sh production true
+```
+
+### Environment Variables
+- `AWS_DEFAULT_REGION` - AWS region (default: us-east-1)
+- `AWS_PROFILE` - AWS profile to use
+
+### Auto-Deploy Features
+
+The script provides comprehensive automation:
+
+1. **Prerequisite Management**
+   - Detects and installs Node.js via package managers (winget, chocolatey)
+   - Installs AWS CLI automatically
+   - Installs AWS CDK globally
+   - Verifies AWS credentials and permissions
+
+2. **Service Verification**
+   - Tests access to all required AWS services
+   - Validates Bedrock model availability
+   - Checks regional service availability
+
+3. **Dependency Management**
+   - Installs root and frontend dependencies with retry logic
+   - Handles npm cache issues automatically
+   - Provides detailed progress feedback
+
+4. **Testing Integration**
+   - Runs linting checks
+   - Executes unit test suite
+   - Validates infrastructure tests
+   - Continues deployment even with test warnings
+
+5. **Deployment Process**
+   - CDK synthesis validation
+   - Frontend build process
+   - Environment-specific deployment
+   - Production deployment confirmation
+
+6. **Verification & Reporting**
+   - CloudFormation stack status checks
+   - API endpoint health testing
+   - Demo environment validation
+   - Comprehensive deployment report generation
+
+## Manual Deployment (Advanced Users)
+
+### Step-by-Step Deployment
 
 ### Step 1: Environment Setup
 
@@ -35,6 +149,10 @@ Ensure your AWS account has access to:
 git clone https://github.com/your-github-username/language-peer.git
 cd language-peer
 
+# Run configuration setup (recommended)
+./scripts/setup-config.sh
+
+# OR configure manually:
 # Install dependencies
 npm install
 cd src/frontend && npm install && cd ../..
@@ -44,7 +162,7 @@ aws configure
 # OR use AWS profiles
 export AWS_PROFILE=your-profile-name
 
-# Set environment variables
+# Set environment variables (if not using setup script)
 export AWS_DEFAULT_REGION=us-east-1
 export GITHUB_OWNER=your-github-username
 export GITHUB_REPO=language-peer
@@ -151,12 +269,33 @@ aws lambda list-functions --query 'Functions[?starts_with(FunctionName, `Languag
 ```
 
 ### 2. API Testing
+
+#### Interactive CloudFront Test Tool
+Use the provided HTML test tool for easy interactive testing:
+
+```bash
+# Open the test tool in your browser
+open test-cloudfront.html
+```
+
+**Features:**
+- Interactive button to test POST requests to the conversation endpoint
+- Real-time display of API responses and errors
+- Pre-configured test payload with sample conversation data
+- Direct testing through the CloudFront CDN distribution
+
+#### Command Line Testing
 ```bash
 # Get API endpoint
 API_ENDPOINT=$(aws cloudformation describe-stacks --stack-name LanguagePeer-Core-development --query 'Stacks[0].Outputs[?OutputKey==`ApiEndpoint`].OutputValue' --output text)
 
 # Test health endpoint
 curl -X GET "${API_ENDPOINT}health"
+
+# Test conversation endpoint via CloudFront (if deployed)
+curl -X POST https://dohpefdcwoh2h.cloudfront.net/development/conversation \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello test", "agentPersonality": "friendly-tutor", "userId": "test-user"}'
 
 # Test CORS
 curl -X OPTIONS "${API_ENDPOINT}health" -H "Origin: http://localhost:3000"

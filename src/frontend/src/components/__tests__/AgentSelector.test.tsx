@@ -246,8 +246,8 @@ describe('AgentSelector Component', () => {
     
     const firstAgentCard = screen.getByText('Emma').closest('.agent-card');
     
-    // Focus and press Enter
-    firstAgentCard?.focus();
+    // Focus and press Enter (using HTMLElement type assertion)
+    (firstAgentCard as HTMLElement)?.focus();
     fireEvent.keyDown(firstAgentCard!, { key: 'Enter', code: 'Enter' });
     
     // Should still work with click handler

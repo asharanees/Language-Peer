@@ -18,6 +18,28 @@ export interface VoiceRecordingControls {
   clearRecording: () => void;
 }
 
+// Check for comprehensive browser support
+const checkBrowserSupport = (): boolean => {
+  // Check if we're in a browser environment
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+    return false;
+  }
+
+  // Check for required APIs
+  const hasMediaDevices = !!navigator.mediaDevices;
+  const hasGetUserMedia = !!navigator.mediaDevices?.getUserMedia;
+  const hasMediaRecorder = typeof MediaRecorder !== 'undefined';
+  const hasWebAudio = typeof AudioContext !== 'undefined' || typeof (window as any).webkitAudioContext !== 'undefined';
+
+  // Check if we're on HTTPS or localhost (required for microphone access)
+  const isSecureContext = window.isSecureContext || 
+    window.location.protocol === 'https:' || 
+    window.location.hostname === 'localhost' || 
+    window.location.hostname === '127.0.0.1';
+
+  return hasMediaDevices && hasGetUserMedia && hasMediaRecorder && hasWebAudio && isSecureContext;
+};
+
 export const useVoiceRecording = (): VoiceRecordingState & VoiceRecordingControls => {
   const [state, setState] = useState<VoiceRecordingState>({
     isRecording: false,
@@ -26,7 +48,7 @@ export const useVoiceRecording = (): VoiceRecordingState & VoiceRecordingControl
     audioBlob: null,
     audioUrl: null,
     error: null,
-    isSupported: typeof navigator !== 'undefined' && !!navigator.mediaDevices?.getUserMedia
+    isSupported: checkBrowserSupport()
   });
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -64,7 +86,24 @@ export const useVoiceRecording = (): VoiceRecordingState & VoiceRecordingControl
 
   const startRecording = useCallback(async () => {
     if (!state.isSupported) {
-      setState(prev => ({ ...prev, error: 'Audio recording is not supported in this browser' }));
+      let errorMessage = 'Voice recording is not supported. ';
+      
+      if (typeof window === 'undefined') {
+        errorMessage += 'Not running in browser environment.';
+      } else if (!window.isSecureContext && window.location.protocol !== 'https:' && 
+                 window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        errorMessage += 'Microphone access requires HTTPS or localhost.';
+      } else if (!navigator.mediaDevices) {
+        errorMessage += 'MediaDevices API not available.';
+      } else if (!navigator.mediaDevices.getUserMedia) {
+        errorMessage += 'getUserMedia not supported.';
+      } else if (typeof MediaRecorder === 'undefined') {
+        errorMessage += 'MediaRecorder API not available.';
+      } else {
+        errorMessage += 'Please use a modern browser like Chrome, Firefox, or Safari.';
+      }
+      
+      setState(prev => ({ ...prev, error: errorMessage }));
       return;
     }
 
@@ -83,11 +122,19 @@ export const useVoiceRecording = (): VoiceRecordingState & VoiceRecordingControl
       streamRef.current = stream;
       chunksRef.current = [];
 
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: MediaRecorder.isTypeSupported('audio/webm;codecs=opus') 
-          ? 'audio/webm;codecs=opus' 
-          : 'audio/webm'
-      });
+      // Try different audio formats in order of preference
+      let mimeType = 'audio/webm';
+      if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+        mimeType = 'audio/webm;codecs=opus';
+      } else if (MediaRecorder.isTypeSupported('audio/webm;codecs=vp8')) {
+        mimeType = 'audio/webm;codecs=vp8';
+      } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+        mimeType = 'audio/mp4';
+      } else if (MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) {
+        mimeType = 'audio/ogg;codecs=opus';
+      }
+
+      const mediaRecorder = new MediaRecorder(stream, { mimeType });
 
       mediaRecorderRef.current = mediaRecorder;
 
@@ -117,9 +164,10 @@ export const useVoiceRecording = (): VoiceRecordingState & VoiceRecordingControl
       };
 
       mediaRecorder.onerror = (event) => {
+        const errorEvent = event as any;
         setState(prev => ({ 
           ...prev, 
-          error: `Recording error: ${event.error?.message || 'Unknown error'}`,
+          error: `Recording error: ${errorEvent.error?.message || 'Unknown error'}`,
           isRecording: false,
           isPaused: false
         }));
@@ -140,7 +188,26 @@ export const useVoiceRecording = (): VoiceRecordingState & VoiceRecordingControl
       }));
 
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to start recording';
+      let errorMessage = 'Failed to start recording: ';
+      
+      if (error instanceof Error) {
+        if (error.name === 'NotAllowedError') {
+          errorMessage += 'Microphone access denied. Please allow microphone access and try again.';
+        } else if (error.name === 'NotFoundError') {
+          errorMessage += 'No microphone found. Please connect a microphone and try again.';
+        } else if (error.name === 'NotSupportedError') {
+          errorMessage += 'Audio recording not supported in this browser.';
+        } else if (error.name === 'NotReadableError') {
+          errorMessage += 'Microphone is already in use by another application.';
+        } else if (error.name === 'SecurityError') {
+          errorMessage += 'Security error. Please ensure you\'re using HTTPS or localhost.';
+        } else {
+          errorMessage += error.message;
+        }
+      } else {
+        errorMessage += 'Unknown error occurred.';
+      }
+      
       setState(prev => ({ ...prev, error: errorMessage }));
     }
   }, [state.isSupported]);

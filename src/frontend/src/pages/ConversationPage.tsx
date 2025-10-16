@@ -68,7 +68,7 @@ const mockAgents: Agent[] = [
 ];
 
 export const ConversationPage: React.FC = () => {
-  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+  const [selectedAgent, setSelectedAgent] = useState<Agent | undefined>(undefined);
   const [isInConversation, setIsInConversation] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
 
@@ -90,7 +90,7 @@ export const ConversationPage: React.FC = () => {
 
   const handleEndConversation = () => {
     setIsInConversation(false);
-    setSelectedAgent(null);
+    setSelectedAgent(undefined);
   };
 
   const handleSwitchAgent = () => {

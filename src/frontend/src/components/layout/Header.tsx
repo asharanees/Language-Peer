@@ -5,6 +5,7 @@ import './Header.css';
 // Components
 import { Button } from '../ui/Button';
 import { VoiceStatusIndicator } from '../voice/VoiceStatusIndicator';
+import { AuthModal } from '../auth/AuthModal';
 
 // Hooks
 import { useAuth } from '../../hooks/useAuth';
@@ -12,9 +13,16 @@ import { useVoice } from '../../hooks/useVoice';
 
 export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const location = useLocation();
   const { user, logout } = useAuth();
   const { isListening, hasPermission } = useVoice();
+
+  const openAuthModal = (mode: 'login' | 'signup') => {
+    setAuthMode(mode);
+    setAuthModalOpen(true);
+  };
 
   const navigation = [
     { name: 'Home', href: '/', current: location.pathname === '/' },
@@ -58,7 +66,7 @@ export const Header: React.FC = () => {
           {/* Voice Status & User Actions */}
           <div className="header-actions">
             {hasPermission && <VoiceStatusIndicator isListening={isListening} />}
-            
+
             {user ? (
               <div className="user-menu">
                 <span className="user-greeting">Hi, {user.name}</span>
@@ -72,10 +80,18 @@ export const Header: React.FC = () => {
               </div>
             ) : (
               <div className="auth-buttons">
-                <Button variant="ghost" size="small">
+                <Button
+                  variant="ghost"
+                  size="small"
+                  onClick={() => openAuthModal('login')}
+                >
                   Login
                 </Button>
-                <Button variant="primary" size="small">
+                <Button
+                  variant="primary"
+                  size="small"
+                  onClick={() => openAuthModal('signup')}
+                >
                   Sign Up
                 </Button>
               </div>
@@ -124,6 +140,12 @@ export const Header: React.FC = () => {
           </ul>
         </nav>
       </div>
+
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialMode={authMode}
+      />
     </header>
   );
 };

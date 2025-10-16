@@ -59,7 +59,7 @@ graph TB
     
     subgraph "API Gateway"
         GW[Gateway Service]
-        AUTH[Authentication]
+        AUTH[Authentication & User Management]
         RATE[Rate Limiting]
     end
     
@@ -232,6 +232,34 @@ interface ProgressReport {
 }
 ```
 
+### Authentication Service
+
+**Responsibilities:**
+- Secure user registration with language preference collection
+- JWT-based authentication and session management
+- User profile creation and management
+- Cross-device authentication synchronization
+- Password security and validation
+
+**Key Interfaces:**
+```typescript
+interface AuthenticationService {
+  register(userData: RegistrationRequest): Promise<AuthenticationResponse>
+  login(credentials: AuthenticationRequest): Promise<AuthenticationResponse>
+  refreshToken(refreshToken: string): Promise<AuthenticationResponse>
+  validateToken(token: string): Promise<UserProfile>
+  updateProfile(userId: string, updates: Partial<UserProfile>): Promise<UserProfile>
+  changePassword(userId: string, oldPassword: string, newPassword: string): Promise<void>
+}
+
+interface AuthenticationModal {
+  isOpen: boolean
+  onClose: () => void
+  initialMode?: 'login' | 'signup'
+  onSuccess?: (user: UserProfile) => void
+}
+```
+
 ### Recommendation Engine
 
 **Responsibilities:**
@@ -256,6 +284,8 @@ interface RecommendationEngine {
 ```typescript
 interface UserProfile {
   userId: string
+  name: string
+  email: string
   targetLanguage: string
   nativeLanguage: string
   currentLevel: LanguageLevel
@@ -266,6 +296,32 @@ interface UserProfile {
   lastSessionDate: Date
   totalSessionTime: number
   milestones: Milestone[]
+  createdAt: Date
+  updatedAt: Date
+}
+```
+
+### Authentication Data Models
+```typescript
+interface AuthenticationRequest {
+  email: string
+  password: string
+}
+
+interface RegistrationRequest {
+  name: string
+  email: string
+  password: string
+  targetLanguage: string
+  nativeLanguage: string
+  currentLevel: LanguageLevel
+}
+
+interface AuthenticationResponse {
+  token: string
+  refreshToken: string
+  expiresIn: number
+  user: UserProfile
 }
 ```
 

@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
+import type { SpeechRecognition, SpeechRecognitionEvent, SpeechRecognitionErrorEvent } from '../types';
 
 export interface TranscriptionResult {
   transcript: string;
@@ -185,10 +186,3 @@ export const useVoiceTranscription = (): TranscriptionState & TranscriptionContr
   };
 };
 
-// Extend the Window interface to include speech recognition
-declare global {
-  interface Window {
-    SpeechRecognition: typeof SpeechRecognition;
-    webkitSpeechRecognition: typeof SpeechRecognition;
-  }
-}

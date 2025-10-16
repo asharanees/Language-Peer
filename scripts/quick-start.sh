@@ -2,6 +2,12 @@
 
 # LanguagePeer Quick Start Script
 # This script helps you get LanguagePeer up and running quickly
+#
+# NOTE: For a more comprehensive deployment experience with automatic
+# prerequisite installation and enhanced error handling, use:
+# ./scripts/auto-deploy.sh
+#
+# This quick-start script is maintained for users who prefer manual control.
 
 set -e
 

@@ -175,6 +175,21 @@
   line-height: 1.5;
 }
 
+.voice-recorder-error-details {
+  text-align: left;
+  margin: 0.5rem 0;
+}
+
+.voice-recorder-error-details ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.voice-recorder-error-details li {
+  margin: 0.25rem 0;
+  line-height: 1.4;
+}
+
 /* Responsive Design */
 @media (max-width: 640px) {
   .voice-recorder {
@@ -216,6 +231,141 @@
   }
 }
 
+/* Text Input Fallback Styles */
+.voice-recorder--text-mode {
+  border-color: var(--info-color, #3b82f6);
+  background: var(--info-background, #eff6ff);
+}
+
+.voice-recorder-fallback-notice {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: var(--background-color, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 8px;
+}
+
+.voice-recorder-notice-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.voice-recorder-notice-icon {
+  font-size: 1.5rem;
+}
+
+.voice-recorder-notice-header h3 {
+  margin: 0;
+  color: var(--text-primary, #1f2937);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.voice-recorder-notice-details {
+  text-align: left;
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.voice-recorder-notice-details ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.voice-recorder-notice-details li {
+  margin: 0.25rem 0;
+}
+
+.voice-recorder-text-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.voice-recorder-text-input-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.voice-recorder-text-input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 2px solid var(--border-color, #e2e8f0);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color 0.2s ease;
+}
+
+.voice-recorder-text-input:focus {
+  outline: none;
+  border-color: var(--primary-color, #3b82f6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.voice-recorder-text-input:disabled {
+  background: var(--gray-50, #f9fafb);
+  color: var(--text-disabled, #9ca3af);
+  cursor: not-allowed;
+}
+
+.voice-recorder-send-btn {
+  flex-shrink: 0;
+  height: fit-content;
+  min-width: 120px;
+}
+
+.voice-recorder-text-hint {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-secondary, #6b7280);
+  font-style: italic;
+}
+
+/* Offline Mode Indicator */
+.offline-indicator {
+  font-size: 0.75rem;
+  color: var(--warning-color, #f59e0b);
+  background: var(--warning-background, #fffbeb);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--warning-border, #fed7aa);
+  margin-left: 0.5rem;
+  font-weight: 500;
+}
+
+/* Responsive adjustments for text mode */
+@media (max-width: 640px) {
+  .voice-recorder-text-input-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .voice-recorder-send-btn {
+    width: 100%;
+  }
+  
+  .voice-recorder-notice-header {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .offline-indicator {
+    margin-left: 0;
+    margin-top: 0.25rem;
+    text-align: center;
+  }
+}
+
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .voice-recorder {
@@ -228,5 +378,9 @@
   
   .voice-recorder-progress-bar {
     border: 1px solid currentColor;
+  }
+  
+  .voice-recorder-text-input {
+    border-width: 3px;
   }
 }

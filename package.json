@@ -7,7 +7,15 @@
     "build": "npm run build:backend && npm run build:frontend",
     "build:backend": "cd src/backend && npm run build",
     "build:frontend": "cd src/frontend && npm run build",
-    "deploy": "./scripts/deploy.sh development all",
+    "deploy": "./scripts/auto-deploy.sh",
+    "deploy:auto": "./scripts/auto-deploy.sh",
+    "deploy:auto:dev": "./scripts/auto-deploy.sh development",
+    "deploy:auto:staging": "./scripts/auto-deploy.sh staging",
+    "deploy:auto:prod": "./scripts/auto-deploy.sh production",
+    "deploy:force": "./scripts/auto-deploy.sh development true",
+    "deploy:force:staging": "./scripts/auto-deploy.sh staging true",
+    "deploy:force:prod": "./scripts/auto-deploy.sh production true",
+    "deploy:manual": "./scripts/deploy.sh development all",
     "deploy:dev": "./scripts/deploy.sh development all",
     "deploy:staging": "./scripts/deploy.sh staging all",
     "deploy:prod": "./scripts/deploy.sh production all",
@@ -16,6 +24,8 @@
     "deploy:agents": "./scripts/deploy.sh development agents",
     "deploy:monitoring": "./scripts/deploy.sh development monitoring",
     "deploy:pipeline": "./scripts/deploy.sh staging pipeline",
+    "deploy:one-click": "./scripts/one-click-deploy.sh",
+    "setup": "./scripts/setup-config.sh",
     "rollback": "./scripts/rollback.sh development all",
     "rollback:staging": "./scripts/rollback.sh staging all",
     "rollback:prod": "./scripts/rollback.sh production all",
@@ -55,12 +65,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-github-username/language-peer.git"
+    "url": "https://github.com/asharanees/language-peer.git"
   },
   "bugs": {
-    "url": "https://github.com/your-github-username/language-peer/issues"
+    "url": "https://github.com/asharanees/language-peer/issues"
   },
-  "homepage": "https://github.com/your-github-username/language-peer#readme",
+  "homepage": "https://github.com/asharanees/language-peer#readme",
   "devDependencies": {
     "@types/node": "^20.0.0",
     "@types/jest": "^29.0.0",

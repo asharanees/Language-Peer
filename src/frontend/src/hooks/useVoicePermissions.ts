@@ -19,7 +19,7 @@ export const useVoicePermissions = (): VoicePermissionsHook => {
   const checkSupport = () => {
     const supported = !!(
       navigator.mediaDevices && 
-      navigator.mediaDevices.getUserMedia &&
+      typeof navigator.mediaDevices.getUserMedia === 'function' &&
       (window.SpeechRecognition || window.webkitSpeechRecognition)
     );
     setIsSupported(supported);

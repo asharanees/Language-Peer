@@ -1,9 +1,10 @@
 // Shared constants for LanguagePeer application
 
 export const BEDROCK_MODELS = {
-  CLAUDE_3_5_SONNET: 'anthropic.claude-3-5-sonnet-20241022-v2:0',
-  LLAMA_3_1_405B: 'meta.llama3-1-405b-instruct-v1:0',
-  NOVA_PRO: 'amazon.nova-pro-v1:0'
+  NOVA_PRO: 'amazon.nova-pro-v1:0',           // Primary model for complex conversations
+  NOVA_LITE: 'amazon.nova-lite-v1:0',         // Lightweight model for simple tasks
+  NOVA_PREMIER: 'amazon.nova-premier-v1:0',   // Advanced model for complex reasoning
+  LLAMA_3_1_70B: 'meta.llama3-1-70b-instruct-v1:0' // Backup model
 } as const;
 
 export const AGENT_PERSONALITIES = {

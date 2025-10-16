@@ -9,9 +9,8 @@ import {
   VoiceId
 } from '@aws-sdk/client-polly';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { PollyResponse, AgentPersonality } from '@/shared/types';
-import { POLLY_VOICES, AUDIO_CONFIG } from '@/shared/constants';
-import { generateSessionId } from '@/shared/utils';
+import { PollyResponse, AgentPersonality } from '../../shared/types';
+import { POLLY_VOICES, AUDIO_CONFIG } from '../../shared/constants';
 
 export interface PollyConfig {
   voiceId: VoiceId;
@@ -107,12 +106,12 @@ export class PollyService {
         Text: text,
         VoiceId: config.voiceId,
         Engine: config.engine,
-        LanguageCode: config.languageCode,
+        LanguageCode: config.languageCode as any, // Type assertion for AWS SDK compatibility
         OutputFormat: config.outputFormat,
         SampleRate: config.sampleRate,
         TextType: config.textType || 'text',
         LexiconNames: config.lexiconNames,
-        SpeechMarkTypes: config.speechMarkTypes
+        SpeechMarkTypes: config.speechMarkTypes as any // Type assertion for AWS SDK compatibility
       });
 
       const response = await this.pollyClient.send(command);
@@ -242,7 +241,7 @@ export class PollyService {
   async getVoicesForLanguage(languageCode: string): Promise<Voice[]> {
     try {
       const command = new DescribeVoicesCommand({
-        LanguageCode: languageCode
+        LanguageCode: languageCode as any // Type assertion for AWS SDK compatibility
       });
 
       const response = await this.pollyClient.send(command);
@@ -356,10 +355,25 @@ export class PollyService {
   }
 
   private selectBestVoiceForLanguage(languageCode: string): VoiceId {
-    const languageVoices = POLLY_VOICES[languageCode as keyof typeof POLLY_VOICES];
-    if (languageVoices && languageVoices.length > 0) {
-      return languageVoices[0] as VoiceId;
+    // Map language codes to voice categories
+    const languageMap: Record<string, keyof typeof POLLY_VOICES> = {
+      'en-US': 'ENGLISH',
+      'en-GB': 'ENGLISH',
+      'es-ES': 'SPANISH',
+      'es-US': 'SPANISH',
+      'fr-FR': 'FRENCH',
+      'fr-CA': 'FRENCH'
+    };
+
+    const voiceCategory = languageMap[languageCode] || 'ENGLISH';
+    const voices = POLLY_VOICES[voiceCategory];
+    
+    // Get first available voice from the category
+    const voiceKeys = Object.keys(voices) as Array<keyof typeof voices>;
+    if (voiceKeys.length > 0) {
+      return voices[voiceKeys[0]] as VoiceId;
     }
+    
     return 'Joanna'; // Default fallback
   }
 

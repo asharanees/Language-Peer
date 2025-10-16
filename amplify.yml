@@ -1,0 +1,22 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - node --version
+        - npm --version
+        - cd src/frontend
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: src/frontend/build
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - src/frontend/node_modules/**/*
+  environment:
+    variables:
+      NODE_VERSION: '18'

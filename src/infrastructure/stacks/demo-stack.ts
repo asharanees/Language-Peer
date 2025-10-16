@@ -476,7 +476,7 @@ export class DemoStack extends cdk.Stack {
         <div class="container">
             <p>&copy; 2024 LanguagePeer. Built for AWS GenAI Hackathon.</p>
             <p>
-                <a href="https://github.com/your-github-username/language-peer" target="_blank">View on GitHub</a> |
+                <a href="https://github.com/asharanees/language-peer" target="_blank">View on GitHub</a> |
                 <a href="#" id="apiDocsLink">API Documentation</a>
             </p>
         </div>
@@ -1187,7 +1187,7 @@ if (environment !== 'development') {
     new DeploymentPipelineStack(app, `LanguagePeer-Pipeline-${environment}`, {
         env,
         environment,
-        githubOwner: process.env.GITHUB_OWNER || 'your-github-username',
+        githubOwner: process.env.GITHUB_OWNER || 'asharanees',
         githubRepo: process.env.GITHUB_REPO || 'language-peer',
         githubBranch: environment === 'production' ? 'main' : 'develop',
         description: `Deployment pipeline for LanguagePeer ${environment} environment`

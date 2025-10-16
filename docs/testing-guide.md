@@ -7,9 +7,10 @@ LanguagePeer uses a comprehensive testing strategy with multiple layers:
 1. **Unit Tests**: Individual component and service testing
 2. **Integration Tests**: Cross-service and AWS integration testing
 3. **End-to-End Tests**: Complete user journey testing
-4. **Infrastructure Tests**: CDK stack and deployment validation
-5. **Performance Tests**: Load and stress testing
-6. **Security Tests**: Vulnerability and compliance testing
+4. **Offline Mode Tests**: Enhanced offline functionality validation
+5. **Infrastructure Tests**: CDK stack and deployment validation
+6. **Performance Tests**: Load and stress testing
+7. **Security Tests**: Vulnerability and compliance testing
 
 ## Test Environment Setup
 
@@ -83,8 +84,38 @@ npm test tests/integration/full-system.test.ts
 ```
 
 #### API Integration Tests
+
+##### CloudFront API Test Tool
+A simple HTML test tool is available at the project root (`test-cloudfront.html`) for interactive CloudFront distribution testing:
+
+**Features:**
+- Interactive button to test POST requests to the conversation endpoint
+- Real-time display of API responses and errors  
+- Pre-configured test payload with sample conversation data
+- Direct testing through the CloudFront CDN distribution
+
+**Usage:**
+1. Open `test-cloudfront.html` in any web browser
+2. Click "Test POST Request" to send a test conversation message
+3. View the response status and data in the results section
+
+**Test Payload:**
+```json
+{
+  "message": "Hello test",
+  "agentPersonality": "friendly-tutor", 
+  "userId": "test-user"
+}
+```
+
+##### Command Line Testing
 ```bash
-# Test API endpoints
+# Test API endpoints via CloudFront
+curl -X POST https://dohpefdcwoh2h.cloudfront.net/development/conversation \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello test", "agentPersonality": "friendly-tutor", "userId": "test-user"}'
+
+# Test demo endpoints
 curl -X GET "$DEMO_API_URL/demo/health"
 curl -X GET "$DEMO_API_URL/demo/users"
 curl -X GET "$DEMO_API_URL/demo/sessions"
@@ -175,8 +206,9 @@ lighthouse $DEMO_BASE_URL --preset=mobile --output html --output-path ./reports/
 
 #### Voice Processing
 - **TranscribeService**: Speech-to-text processing
-- **PollyService**: Text-to-speech synthesis
+- **PollyService**: Text-to-speech synthesis with event-driven completion
 - **S3AudioService**: Audio file management
+- **TTS Event Handling**: Browser-based speech synthesis with proper completion detection
 
 #### Data Services
 - **UserProfileService**: User data management
@@ -188,7 +220,45 @@ lighthouse $DEMO_BASE_URL --preset=mobile --output html --output-path ./reports/
 - **EngagementDetection**: User engagement analysis
 - **IntelligentFeedbackTiming**: Feedback optimization
 
-### 3. Infrastructure Tests
+### 3. Enhanced Offline Mode Tests
+
+#### Offline Functionality Testing
+```bash
+# Test offline mode functionality
+npm run test:offline
+
+# Test specific offline features
+npm test -- ConversationInterface.test.tsx --testNamePattern="offline"
+npm test -- generateEnhancedOfflineResponse
+npm test -- generateMockFeedback
+```
+
+#### Offline Mode Test Cases
+- **Context-Aware Responses**: Verify responses adapt to conversation topics
+- **Personality Preservation**: Ensure agent personalities remain distinct offline
+- **Realistic Feedback**: Validate dynamic scoring and suggestions
+- **Seamless Transitions**: Test online/offline mode switching
+- **Local Storage**: Verify conversation persistence
+
+#### Manual Offline Testing
+```bash
+# Simulate offline mode
+# 1. Start the application
+npm run dev
+
+# 2. Open browser developer tools
+# 3. Go to Network tab
+# 4. Check "Offline" to simulate network failure
+# 5. Test conversation functionality
+
+# Expected behavior:
+# - Conversations continue working
+# - Agent responses are contextual and realistic
+# - Feedback scores are generated dynamically
+# - No error messages or broken functionality
+```
+
+### 4. Infrastructure Tests
 
 #### CDK Stack Tests
 - **LanguagePeerStack**: Core infrastructure

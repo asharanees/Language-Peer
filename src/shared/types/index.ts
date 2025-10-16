@@ -231,3 +231,10 @@ export interface MotivationalMessage {
   type: 'encouragement' | 'milestone' | 'progress' | 'reassurance';
   personalizedElements: string[];
 }
+
+// Polly TTS response types
+export interface PollyResponse {
+  audioStream: Buffer;
+  contentType: string;
+  requestCharacters: number;
+}

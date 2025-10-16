@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '../ui/Button';
 import { useVoiceRecording } from '../../hooks/useVoiceRecording';
 import { useVoiceTranscription } from '../../hooks/useVoiceTranscription';
@@ -76,7 +76,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
     if (audioBlob && !isRecording && onRecordingComplete) {
       onRecordingComplete(audioBlob, finalTranscript);
     }
-  }, [audioBlob, isRecording, finalTranscript, onRecordingComplete]);
+  }, [audioBlob, isRecording, finalTranscript]);
 
   const handleStartRecording = async () => {
     clearRecording();
@@ -121,15 +121,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
   };
 
   if (!recordingSupported) {
-    return (
-      <div className={`voice-recorder voice-recorder--unsupported ${className}`}>
-        <div className="voice-recorder-error">
-          <span className="voice-recorder-error-icon">⚠️</span>
-          <p>Voice recording is not supported in this browser.</p>
-          <p>Please use a modern browser like Chrome, Firefox, or Safari.</p>
-        </div>
-      </div>
-    );
+    return <TextInputFallback onMessageSend={onRecordingComplete} className={className} />;
   }
 
   const isActive = isRecording || isTranscribing;
@@ -268,6 +260,86 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
           <span>{recordingError || transcriptionError}</span>
         </div>
       )}
+    </div>
+  );
+};
+
+// Text input fallback component for when voice recording is not supported
+interface TextInputFallbackProps {
+  onMessageSend?: (audioBlob: Blob, transcript: string) => void;
+  className?: string;
+}
+
+const TextInputFallback: React.FC<TextInputFallbackProps> = ({ onMessageSend, className }) => {
+  const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!message.trim() || !onMessageSend) return;
+
+    setIsLoading(true);
+    
+    // Create a mock audio blob for compatibility
+    const mockAudioBlob = new Blob([''], { type: 'audio/wav' });
+    
+    try {
+      await onMessageSend(mockAudioBlob, message.trim());
+      setMessage('');
+    } catch (error) {
+      console.error('Failed to send message:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className={`voice-recorder voice-recorder--text-mode ${className}`}>
+      <div className="voice-recorder-fallback-notice">
+        <div className="voice-recorder-notice-header">
+          <span className="voice-recorder-notice-icon">💬</span>
+          <h3>Text Mode</h3>
+        </div>
+        <p>Voice recording requires HTTPS. You can still practice by typing your messages!</p>
+        <div className="voice-recorder-notice-details">
+          <p><strong>To enable voice recording:</strong></p>
+          <ul>
+            <li>Access the app via HTTPS (recommended for production)</li>
+            <li>Or run locally on localhost with HTTPS</li>
+          </ul>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="voice-recorder-text-form">
+        <div className="voice-recorder-text-input-group">
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Type your message here and press Enter to send..."
+            className="voice-recorder-text-input"
+            rows={3}
+            disabled={isLoading}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit(e);
+              }
+            }}
+          />
+          <Button
+            type="submit"
+            variant="primary"
+            disabled={!message.trim() || isLoading}
+            leftIcon={isLoading ? "⏳" : "📤"}
+            className="voice-recorder-send-btn"
+          >
+            {isLoading ? 'Sending...' : 'Send Message'}
+          </Button>
+        </div>
+        <div className="voice-recorder-text-hint">
+          <span>💡 Tip: Press Enter to send, Shift+Enter for new line</span>
+        </div>
+      </form>
     </div>
   );
 };

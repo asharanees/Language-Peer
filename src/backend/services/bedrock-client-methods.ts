@@ -32,14 +32,33 @@ Student Profile:
     }
 
     switch (modelId) {
-      case BEDROCK_MODELS.CLAUDE_3_5_SONNET:
-        return `Human: ${systemPrompt}
+      case BEDROCK_MODELS.NOVA_PREMIER:
+      case BEDROCK_MODELS.NOVA_PRO:
+      case BEDROCK_MODELS.NOVA_LITE:
+        return `System: ${systemPrompt}
 
 ${profileContext}
 
-Previous conversation:
+Conversation History:
 ${historyText}
 
-Current student message: ${userMessage}
+Student: ${userMessage}
 
-Please respond as a supportive language learning tutor. Keep your response conversational and encouraging.
+Tutor: Please respond as a supportive language learning tutor. Keep your response conversational and encouraging.`;
+
+      case BEDROCK_MODELS.LLAMA_3_1_70B:
+        // Llama format
+        return `<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+${systemPrompt}
+
+${profileContext}<|eot_id|><|start_header_id|>user<|end_header_id|>
+${historyText}
+
+${userMessage}<|eot_id|><|start_header_id|>assistant<|end_header_id|>`;
+
+      default:
+        // Default format for other models
+        return `${systemPrompt}\n\nUser: ${userMessage}\nAssistant:`;
+    }
+  }
+}

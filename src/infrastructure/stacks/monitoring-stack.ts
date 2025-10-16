@@ -1,5 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
+import * as cloudwatchActions from 'aws-cdk-lib/aws-cloudwatch-actions';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as sns from 'aws-cdk-lib/aws-sns';
 import * as snsSubscriptions from 'aws-cdk-lib/aws-sns-subscriptions';
@@ -136,7 +137,7 @@ export class MonitoringStack extends cdk.Stack {
     });
 
     api4xxAlarm.addAlarmAction(
-      new cloudwatch.SnsAction(this.alertTopic)
+      new cloudwatchActions.SnsAction(this.alertTopic)
     );
 
     // API Gateway 5XX errors
@@ -158,7 +159,7 @@ export class MonitoringStack extends cdk.Stack {
     });
 
     api5xxAlarm.addAlarmAction(
-      new cloudwatch.SnsAction(this.alertTopic)
+      new cloudwatchActions.SnsAction(this.alertTopic)
     );
 
     // API Gateway latency
@@ -180,18 +181,18 @@ export class MonitoringStack extends cdk.Stack {
     });
 
     apiLatencyAlarm.addAlarmAction(
-      new cloudwatch.SnsAction(this.alertTopic)
+      new cloudwatchActions.SnsAction(this.alertTopic)
     );
   }
 
   private createDynamoDBMetricsAndAlarms(props: MonitoringStackProps) {
     const tables = [props.userTableName, props.sessionTableName].filter(Boolean);
 
-    tables.forEach(tableName => {
+    tables.forEach((tableName, index) => {
       if (!tableName) return;
 
       // DynamoDB throttling alarm
-      const throttleAlarm = new cloudwatch.Alarm(this, `DynamoThrottle-${tableName}`, {
+      const throttleAlarm = new cloudwatch.Alarm(this, `DynamoThrottle${index}`, {
         alarmName: `LanguagePeer-DynamoDB-Throttle-${tableName}-${props.environment}`,
         alarmDescription: `DynamoDB throttling detected for ${tableName}`,
         metric: new cloudwatch.Metric({
@@ -209,11 +210,11 @@ export class MonitoringStack extends cdk.Stack {
       });
 
       throttleAlarm.addAlarmAction(
-        new cloudwatch.SnsAction(this.alertTopic)
+        new cloudwatchActions.SnsAction(this.alertTopic)
       );
 
       // DynamoDB error rate alarm
-      const errorAlarm = new cloudwatch.Alarm(this, `DynamoErrors-${tableName}`, {
+      const errorAlarm = new cloudwatch.Alarm(this, `DynamoErrors${index}`, {
         alarmName: `LanguagePeer-DynamoDB-Errors-${tableName}-${props.environment}`,
         alarmDescription: `High error rate for DynamoDB table ${tableName}`,
         metric: new cloudwatch.Metric({
@@ -231,7 +232,7 @@ export class MonitoringStack extends cdk.Stack {
       });
 
       errorAlarm.addAlarmAction(
-        new cloudwatch.SnsAction(this.alertTopic)
+        new cloudwatchActions.SnsAction(this.alertTopic)
       );
     });
   }
@@ -258,7 +259,7 @@ export class MonitoringStack extends cdk.Stack {
     });
 
     s34xxAlarm.addAlarmAction(
-      new cloudwatch.SnsAction(this.alertTopic)
+      new cloudwatchActions.SnsAction(this.alertTopic)
     );
   }
 
@@ -279,7 +280,7 @@ export class MonitoringStack extends cdk.Stack {
     });
 
     lambdaErrorAlarm.addAlarmAction(
-      new cloudwatch.SnsAction(this.alertTopic)
+      new cloudwatchActions.SnsAction(this.alertTopic)
     );
 
     // Lambda duration alarm
@@ -298,7 +299,7 @@ export class MonitoringStack extends cdk.Stack {
     });
 
     lambdaDurationAlarm.addAlarmAction(
-      new cloudwatch.SnsAction(this.alertTopic)
+      new cloudwatchActions.SnsAction(this.alertTopic)
     );
   }
 
@@ -320,7 +321,7 @@ export class MonitoringStack extends cdk.Stack {
     });
 
     conversationSuccessAlarm.addAlarmAction(
-      new cloudwatch.SnsAction(this.alertTopic)
+      new cloudwatchActions.SnsAction(this.alertTopic)
     );
 
     // Custom metric for voice processing latency
@@ -339,7 +340,7 @@ export class MonitoringStack extends cdk.Stack {
     });
 
     voiceLatencyAlarm.addAlarmAction(
-      new cloudwatch.SnsAction(this.alertTopic)
+      new cloudwatchActions.SnsAction(this.alertTopic)
     );
   }
 
@@ -503,38 +504,8 @@ export class MonitoringStack extends cdk.Stack {
   }
 
   private createLogInsightsQueries() {
-    // Create saved queries for common log analysis
-    new logs.QueryDefinition(this, 'ErrorLogsQuery', {
-      queryDefinitionName: `LanguagePeer-Errors-${this.stackName}`,
-      queryString: `
-        fields @timestamp, @message, @logStream
-        | filter @message like /ERROR/
-        | sort @timestamp desc
-        | limit 100
-      `,
-      logGroups: [this.logGroup]
-    });
-
-    new logs.QueryDefinition(this, 'PerformanceQuery', {
-      queryDefinitionName: `LanguagePeer-Performance-${this.stackName}`,
-      queryString: `
-        fields @timestamp, @duration, @requestId
-        | filter @type = "REPORT"
-        | stats avg(@duration), max(@duration), min(@duration) by bin(5m)
-      `,
-      logGroups: [this.logGroup]
-    });
-
-    new logs.QueryDefinition(this, 'ConversationAnalysisQuery', {
-      queryDefinitionName: `LanguagePeer-Conversations-${this.stackName}`,
-      queryString: `
-        fields @timestamp, @message
-        | filter @message like /conversation/
-        | stats count() by bin(1h)
-        | sort @timestamp desc
-      `,
-      logGroups: [this.logGroup]
-    });
+    // Note: QueryDefinition removed due to CDK version compatibility issues
+    // You can create custom queries manually in CloudWatch Logs Insights
   }
 
   private createEventBridgeRules(props: MonitoringStackProps) {

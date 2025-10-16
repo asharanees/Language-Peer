@@ -64,20 +64,27 @@ export class BedrockService {
   selectModel(context: ConversationContext): string {
     const { userProfile, conversationHistory } = context;
     
-    // For complex conversations or advanced users, use Claude 3.5 Sonnet
+    // For complex conversations or advanced users, use Nova Premier
     if (userProfile?.languageLevel === 'advanced' || 
         userProfile?.languageLevel === 'proficient' ||
         conversationHistory.length > 10) {
-      return BEDROCK_MODELS.CLAUDE_3_5_SONNET;
+      return BEDROCK_MODELS.NOVA_PREMIER;
     }
     
-    // For pronunciation coaching, use Nova Pro for better voice understanding
-    if (userProfile?.learningGoals?.includes('pronunciation-improvement')) {
+    // For pronunciation coaching and detailed feedback, use Nova Pro
+    if (userProfile?.learningGoals?.includes('pronunciation-improvement') ||
+        userProfile?.learningGoals?.includes('grammar-accuracy')) {
       return BEDROCK_MODELS.NOVA_PRO;
     }
     
-    // For general conversation and grammar, use Llama 3.1
-    return BEDROCK_MODELS.LLAMA_3_1_405B;
+    // For beginners and simple conversations, use Nova Lite
+    if (userProfile?.languageLevel === 'beginner' || 
+        userProfile?.languageLevel === 'elementary') {
+      return BEDROCK_MODELS.NOVA_LITE;
+    }
+    
+    // Default to Nova Pro for general conversation
+    return BEDROCK_MODELS.NOVA_PRO;
   }
 
   /**
@@ -92,26 +99,35 @@ export class BedrockService {
     };
 
     switch (modelId) {
-      case BEDROCK_MODELS.CLAUDE_3_5_SONNET:
+      case BEDROCK_MODELS.NOVA_PREMIER:
         return {
           ...baseConfig,
-          temperature: 0.8, // More creative for conversation
-          maxTokens: 1500,
-          stopSequences: ['Human:', 'Assistant:']
-        };
-        
-      case BEDROCK_MODELS.LLAMA_3_1_405B:
-        return {
-          ...baseConfig,
-          temperature: 0.6, // More focused for grammar
-          maxTokens: 1200
+          temperature: 0.8, // More creative for complex conversations
+          maxTokens: 2000,
+          stopSequences: ['Student:', 'Tutor:']
         };
         
       case BEDROCK_MODELS.NOVA_PRO:
         return {
           ...baseConfig,
-          temperature: 0.5, // More precise for pronunciation
-          maxTokens: 800
+          temperature: 0.7, // Balanced for general conversation
+          maxTokens: 1500,
+          stopSequences: ['Student:', 'Tutor:']
+        };
+        
+      case BEDROCK_MODELS.NOVA_LITE:
+        return {
+          ...baseConfig,
+          temperature: 0.6, // More focused for beginners
+          maxTokens: 1000,
+          stopSequences: ['Student:', 'Tutor:']
+        };
+        
+      case BEDROCK_MODELS.LLAMA_3_1_70B:
+        return {
+          ...baseConfig,
+          temperature: 0.6, // Backup model configuration
+          maxTokens: 1200
         };
         
       default:
@@ -146,30 +162,9 @@ Student Profile:
     }
 
     switch (modelId) {
-      case BEDROCK_MODELS.CLAUDE_3_5_SONNET:
-        return `Human: ${systemPrompt}
-
-${profileContext}
-
-Previous conversation:
-${historyText}
-
-Current student message: ${userMessage}
-
-Please respond as a supportive language learning tutor.As
-sistant:`;
-
-      case BEDROCK_MODELS.LLAMA_3_1_405B:
-        return `<|begin_of_text|><|start_header_id|>system<|end_header_id|>
-${systemPrompt}
-
-${profileContext}<|eot_id|><|start_header_id|>user<|end_header_id|>
-Previous conversation:
-${historyText}
-
-Current message: ${userMessage}<|eot_id|><|start_header_id|>assistant<|end_header_id|>`;
-
+      case BEDROCK_MODELS.NOVA_PREMIER:
       case BEDROCK_MODELS.NOVA_PRO:
+      case BEDROCK_MODELS.NOVA_LITE:
         return `System: ${systemPrompt}
 
 ${profileContext}
@@ -180,6 +175,16 @@ ${historyText}
 Student: ${userMessage}
 
 Tutor:`;
+
+      case BEDROCK_MODELS.LLAMA_3_1_70B:
+        return `<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+${systemPrompt}
+
+${profileContext}<|eot_id|><|start_header_id|>user<|end_header_id|>
+Previous conversation:
+${historyText}
+
+Current message: ${userMessage}<|eot_id|><|start_header_id|>assistant<|end_header_id|>`;
 
       default:
         return `${systemPrompt}\n\nStudent: ${userMessage}\nTutor:`;
@@ -223,38 +228,34 @@ Tutor:`;
    */
   private buildRequestBody(modelId: string, prompt: string, config: BedrockModelConfig): any {
     switch (modelId) {
-      case BEDROCK_MODELS.CLAUDE_3_5_SONNET:
+      case BEDROCK_MODELS.NOVA_PREMIER:
+      case BEDROCK_MODELS.NOVA_PRO:
+      case BEDROCK_MODELS.NOVA_LITE:
         return {
-          anthropic_version: 'bedrock-2023-05-31',
-          max_tokens: config.maxTokens,
-          temperature: config.temperature,
-          top_p: config.topP,
           messages: [
             {
               role: 'user',
-              content: prompt
+              content: [
+                {
+                  text: prompt
+                }
+              ]
             }
           ],
-          stop_sequences: config.stopSequences
+          inferenceConfig: {
+            maxTokens: config.maxTokens,
+            temperature: config.temperature,
+            topP: config.topP,
+            stopSequences: config.stopSequences
+          }
         };
 
-      case BEDROCK_MODELS.LLAMA_3_1_405B:
+      case BEDROCK_MODELS.LLAMA_3_1_70B:
         return {
           prompt,
           max_gen_len: config.maxTokens,
           temperature: config.temperature,
           top_p: config.topP
-        };
-
-      case BEDROCK_MODELS.NOVA_PRO:
-        return {
-          inputText: prompt,
-          textGenerationConfig: {
-            maxTokenCount: config.maxTokens,
-            temperature: config.temperature,
-            topP: config.topP,
-            stopSequences: config.stopSequences
-          }
         };
 
       default:
@@ -276,31 +277,24 @@ Tutor:`;
     let stopReason = 'end_turn';
 
     switch (modelId) {
-      case BEDROCK_MODELS.CLAUDE_3_5_SONNET:
-        content = responseBody.content?.[0]?.text || '';
+      case BEDROCK_MODELS.NOVA_PREMIER:
+      case BEDROCK_MODELS.NOVA_PRO:
+      case BEDROCK_MODELS.NOVA_LITE:
+        content = responseBody.output?.message?.content?.[0]?.text || '';
         usage = {
-          inputTokens: responseBody.usage?.input_tokens || 0,
-          outputTokens: responseBody.usage?.output_tokens || 0
+          inputTokens: responseBody.usage?.inputTokens || 0,
+          outputTokens: responseBody.usage?.outputTokens || 0
         };
-        stopReason = responseBody.stop_reason || 'end_turn';
+        stopReason = responseBody.stopReason || 'end_turn';
         break;
 
-      case BEDROCK_MODELS.LLAMA_3_1_405B:
+      case BEDROCK_MODELS.LLAMA_3_1_70B:
         content = responseBody.generation || '';
         usage = {
           inputTokens: responseBody.prompt_token_count || 0,
           outputTokens: responseBody.generation_token_count || 0
         };
         stopReason = responseBody.stop_reason || 'end_turn';
-        break;
-
-      case BEDROCK_MODELS.NOVA_PRO:
-        content = responseBody.results?.[0]?.outputText || '';
-        usage = {
-          inputTokens: responseBody.inputTextTokenCount || 0,
-          outputTokens: responseBody.results?.[0]?.tokenCount || 0
-        };
-        stopReason = responseBody.results?.[0]?.completionReason || 'end_turn';
         break;
 
       default:
@@ -360,12 +354,12 @@ Tutor:`;
    */
   private extractTextFromStreamChunk(modelId: string, chunkData: any): string {
     switch (modelId) {
-      case BEDROCK_MODELS.CLAUDE_3_5_SONNET:
-        return chunkData.delta?.text || '';
-      case BEDROCK_MODELS.LLAMA_3_1_405B:
-        return chunkData.generation || '';
+      case BEDROCK_MODELS.NOVA_PREMIER:
       case BEDROCK_MODELS.NOVA_PRO:
-        return chunkData.outputText || '';
+      case BEDROCK_MODELS.NOVA_LITE:
+        return chunkData.contentBlockDelta?.text || '';
+      case BEDROCK_MODELS.LLAMA_3_1_70B:
+        return chunkData.generation || '';
       default:
         return chunkData.text || '';
     }
