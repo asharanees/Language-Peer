@@ -2,19 +2,15 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 
 interface User {
   id: string;
-  name: string;
   email: string;
-  targetLanguage: string;
-  nativeLanguage: string;
-  currentLevel: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (username: string, password: string) => Promise<void>;
   logout: () => void;
-  register: (userData: Partial<User>) => Promise<void>;
+  register: (username: string, password: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -46,17 +42,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     checkAuth();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (username: string, password: string) => {
     setIsLoading(true);
     try {
-      // Simulate login API call
+      // Simulate login API call - convert username to email format for demo
+      const email = username.includes('@') ? username : `${username}@example.com`;
       const mockUser: User = {
         id: '1',
-        name: 'Demo User',
-        email,
-        targetLanguage: 'English',
-        nativeLanguage: 'Spanish',
-        currentLevel: 'intermediate'
+        email
       };
       
       localStorage.setItem('languagepeer_user', JSON.stringify(mockUser));
@@ -74,17 +67,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(null);
   };
 
-  const register = async (userData: Partial<User>) => {
+  const register = async (username: string, password: string) => {
     setIsLoading(true);
     try {
-      // Simulate registration API call
+      // Simulate registration API call - convert username to email format for demo
+      const email = username.includes('@') ? username : `${username}@example.com`;
       const newUser: User = {
         id: Date.now().toString(),
-        name: userData.name || 'New User',
-        email: userData.email || '',
-        targetLanguage: userData.targetLanguage || 'English',
-        nativeLanguage: userData.nativeLanguage || 'Spanish',
-        currentLevel: userData.currentLevel || 'beginner'
+        email
       };
       
       localStorage.setItem('languagepeer_user', JSON.stringify(newUser));

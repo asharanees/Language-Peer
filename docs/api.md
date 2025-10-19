@@ -21,19 +21,18 @@ All API endpoints require authentication using JWT tokens. LanguagePeer provides
 
 ### User Registration
 
+**Current Simplified Format:**
 ```http
 POST /auth/register
 Content-Type: application/json
 
 {
-  "name": "John Doe",
-  "email": "user@example.com",
-  "password": "securepassword",
-  "targetLanguage": "English",
-  "nativeLanguage": "Spanish",
-  "currentLevel": "intermediate"
+  "username": "myusername",
+  "password": "securepassword"
 }
 ```
+
+**Note**: Registration has been simplified to collect only essential authentication data. Language preferences and profile details can be collected during onboarding or in profile settings.
 
 **Response:**
 ```json
@@ -43,15 +42,8 @@ Content-Type: application/json
   "expiresIn": 3600,
   "user": {
     "id": "user_123",
-    "name": "John Doe",
-    "email": "user@example.com",
-    "profile": {
-      "targetLanguage": "English",
-      "nativeLanguage": "Spanish",
-      "currentLevel": "intermediate",
-      "learningGoals": [],
-      "createdAt": "2024-01-20T10:30:00Z"
-    }
+    "username": "myusername",
+    "createdAt": "2024-01-20T10:30:00Z"
   }
 }
 ```
@@ -63,7 +55,7 @@ POST /auth/login
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
+  "username": "myusername",
   "password": "securepassword"
 }
 ```
@@ -76,8 +68,7 @@ Content-Type: application/json
   "expiresIn": 3600,
   "user": {
     "id": "user_123",
-    "name": "John Doe",
-    "email": "user@example.com",
+    "username": "myusername",
     "profile": {
       "targetLanguage": "English",
       "nativeLanguage": "Spanish",

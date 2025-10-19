@@ -4,12 +4,10 @@ import './Header.css';
 
 // Components
 import { Button } from '../ui/Button';
-import { VoiceStatusIndicator } from '../voice/VoiceStatusIndicator';
 import { AuthModal } from '../auth/AuthModal';
 
 // Hooks
 import { useAuth } from '../../hooks/useAuth';
-import { useVoice } from '../../hooks/useVoice';
 
 export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -17,7 +15,6 @@ export const Header: React.FC = () => {
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const location = useLocation();
   const { user, logout } = useAuth();
-  const { isListening, hasPermission } = useVoice();
 
   const openAuthModal = (mode: 'login' | 'signup') => {
     setAuthMode(mode);
@@ -28,7 +25,6 @@ export const Header: React.FC = () => {
     { name: 'Home', href: '/', current: location.pathname === '/' },
     { name: 'Practice', href: '/conversation', current: location.pathname === '/conversation' },
     { name: 'Progress', href: '/progress', current: location.pathname === '/progress' },
-    { name: 'Profile', href: '/profile', current: location.pathname === '/profile' },
   ];
 
   const toggleMobileMenu = () => {
@@ -63,13 +59,11 @@ export const Header: React.FC = () => {
             </ul>
           </nav>
 
-          {/* Voice Status & User Actions */}
+          {/* User Actions */}
           <div className="header-actions">
-            {hasPermission && <VoiceStatusIndicator isListening={isListening} />}
-
             {user ? (
               <div className="user-menu">
-                <span className="user-greeting">Hi, {user.name}</span>
+                <span className="user-greeting">Hi, {user.email.split('@')[0]}</span>
                 <Button
                   variant="outline"
                   size="small"
@@ -81,7 +75,7 @@ export const Header: React.FC = () => {
             ) : (
               <div className="auth-buttons">
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="small"
                   onClick={() => openAuthModal('login')}
                 >

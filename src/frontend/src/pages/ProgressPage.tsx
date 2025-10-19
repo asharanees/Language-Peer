@@ -1,10 +1,108 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/ui/Button';
+import { ProgressMetrics, ConversationSession } from '../types';
 import './ProgressPage.css';
+
+interface ProgressData {
+  overallProgress: number;
+  weeklyGoal: number;
+  sessionsThisWeek: number;
+  totalSessions: number;
+  totalHours: number;
+  currentStreak: number;
+  longestStreak: number;
+  recentSessions: Array<{
+    date: string;
+    duration: number;
+    accuracy: number;
+    agent: string;
+  }>;
+  skillBreakdown: {
+    grammar: number;
+    pronunciation: number;
+    vocabulary: number;
+    fluency: number;
+  };
+}
 
 export const ProgressPage: React.FC = () => {
   const { user } = useAuth();
+  const [progressData, setProgressData] = useState<ProgressData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserProgress();
+    }
+  }, [user]);
+
+  const fetchUserProgress = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // In a real app, this would fetch from your API
+      // For now, we'll simulate fetching user-specific data
+      const userData = await simulateProgressFetch(user!.id);
+      setProgressData(userData);
+    } catch (err) {
+      setError('Failed to load progress data');
+      console.error('Error fetching progress:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const simulateProgressFetch = async (userId: string): Promise<ProgressData> => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Generate user-specific progress data based on userId
+    const userSeed = userId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const random = (seed: number) => (seed * 9301 + 49297) % 233280 / 233280;
+    
+    const baseProgress = 40 + (userSeed % 40); // 40-80% base progress
+    const sessionsCompleted = Math.floor(5 + (userSeed % 20)); // 5-25 sessions
+    const currentStreak = Math.floor(1 + (userSeed % 14)); // 1-14 days
+    
+    return {
+      overallProgress: baseProgress,
+      weeklyGoal: 5,
+      sessionsThisWeek: Math.min(5, Math.floor(currentStreak / 2)),
+      totalSessions: sessionsCompleted,
+      totalHours: Math.round((sessionsCompleted * 25 / 60) * 10) / 10, // ~25min per session
+      currentStreak,
+      longestStreak: currentStreak + Math.floor(userSeed % 10),
+      recentSessions: generateRecentSessions(userSeed, Math.min(5, sessionsCompleted)),
+      skillBreakdown: {
+        grammar: Math.floor(baseProgress + (random(userSeed + 1) * 20 - 10)),
+        pronunciation: Math.floor(baseProgress + (random(userSeed + 2) * 20 - 10)),
+        vocabulary: Math.floor(baseProgress + (random(userSeed + 3) * 20 - 10)),
+        fluency: Math.floor(baseProgress + (random(userSeed + 4) * 20 - 10))
+      }
+    };
+  };
+
+  const generateRecentSessions = (seed: number, count: number) => {
+    const agents = ['Emma', 'Professor Chen', 'Alex', 'Riley', 'Maria'];
+    const sessions = [];
+    
+    for (let i = 0; i < count; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      
+      sessions.push({
+        date: date.toISOString().split('T')[0],
+        duration: 20 + Math.floor((seed + i) % 20), // 20-40 minutes
+        accuracy: 75 + Math.floor((seed + i * 2) % 20), // 75-95% accuracy
+        agent: agents[(seed + i) % agents.length]
+      });
+    }
+    
+    return sessions;
+  };
 
   if (!user) {
     return (
@@ -22,29 +120,35 @@ export const ProgressPage: React.FC = () => {
     );
   }
 
-  // Mock data for demonstration
-  const progressData = {
-    overallProgress: 68,
-    weeklyGoal: 5,
-    sessionsThisWeek: 3,
-    totalSessions: 12,
-    totalHours: 3.2,
-    currentStreak: 7,
-    longestStreak: 12,
-    recentSessions: [
-      { date: '2024-10-15', duration: 25, accuracy: 87, agent: 'Emma' },
-      { date: '2024-10-14', duration: 30, accuracy: 92, agent: 'Professor Chen' },
-      { date: '2024-10-13', duration: 20, accuracy: 85, agent: 'Alex' },
-      { date: '2024-10-12', duration: 35, accuracy: 89, agent: 'Riley' },
-      { date: '2024-10-11', duration: 28, accuracy: 91, agent: 'Emma' }
-    ],
-    skillBreakdown: {
-      grammar: 75,
-      pronunciation: 82,
-      vocabulary: 68,
-      fluency: 71
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="progress-page">
+        <div className="container">
+          <div className="progress-loading">
+            <h1>Learning Progress</h1>
+            <p>Loading your progress data...</p>
+            <div className="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !progressData) {
+    return (
+      <div className="progress-page">
+        <div className="container">
+          <div className="progress-error">
+            <h1>Learning Progress</h1>
+            <p>{error || 'Failed to load progress data'}</p>
+            <Button variant="primary" onClick={fetchUserProgress}>
+              Try Again
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="progress-page">

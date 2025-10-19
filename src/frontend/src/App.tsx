@@ -11,7 +11,7 @@ import { Toast } from './components/common/Toast';
 // Pages
 import { HomePage } from './pages/HomePage';
 import { ConversationPage } from './pages/ConversationPage';
-import { ProfilePage } from './pages/ProfilePage';
+
 import { ProgressPage } from './pages/ProgressPage';
 import { SettingsPage } from './pages/SettingsPage';
 
@@ -70,7 +70,7 @@ const App: React.FC = () => {
                 <Routes>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/conversation" element={<ConversationPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
+
                   <Route path="/progress" element={<ProgressPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                   <Route path="*" element={<Navigate to="/" replace />} />

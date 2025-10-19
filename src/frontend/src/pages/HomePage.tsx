@@ -41,14 +41,14 @@ export const HomePage: React.FC = () => {
                     Start Practicing
                   </Button>
                 ) : (
-                  <>
-                    <Button variant="primary" size="large">
-                      Get Started Free
-                    </Button>
-                    <Button variant="outline" size="large">
-                      Watch Demo
-                    </Button>
-                  </>
+                  <Button
+                    as={Link}
+                    to="/conversation"
+                    variant="primary"
+                    size="large"
+                  >
+                    Get Started Free
+                  </Button>
                 )}
               </div>
             </div>

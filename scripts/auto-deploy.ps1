@@ -4,7 +4,7 @@
 param(
     [string]$Environment = "development",
     [bool]$ForceDeploy = $false,
-    [string]$Region = $env:AWS_DEFAULT_REGION ?? "us-east-1"
+    [string]$Region = $(if ($env:AWS_DEFAULT_REGION) { $env:AWS_DEFAULT_REGION } else { "us-east-1" })
 )
 
 # Set error action preference
@@ -585,10 +585,10 @@ function New-DeploymentReport {
         try {
             aws cloudformation describe-stacks --stack-name $stack --region $Region > $null 2>&1
             $status = aws cloudformation describe-stacks --stack-name $stack --region $Region --query 'Stacks[0].StackStatus' --output text
-            $reportContent += "- **$stack:** $status`n"
+            $reportContent += "- **${stack}:** $status`n"
         }
         catch {
-            $reportContent += "- **$stack:** Not Found`n"
+            $reportContent += "- **${stack}:** Not Found`n"
         }
     }
     
@@ -606,10 +606,10 @@ function New-DeploymentReport {
         $dashboardUrl = aws cloudformation describe-stacks --stack-name "LanguagePeer-Monitoring-$Environment" --region $Region --query 'Stacks[0].Outputs[?OutputKey==`DashboardUrl`].OutputValue' --output text 2>$null
         
         $reportContent += @"
-- **API Endpoint:** $($apiEndpoint ?? "Not available")
-- **Demo Website:** $($demoUrl ?? "Not available")
-- **Demo API:** $($demoApiUrl ?? "Not available")
-- **Monitoring Dashboard:** $($dashboardUrl ?? "Not available")
+- **API Endpoint:** $(if ($apiEndpoint) { $apiEndpoint } else { "Not available" })
+- **Demo Website:** $(if ($demoUrl) { $demoUrl } else { "Not available" })
+- **Demo API:** $(if ($demoApiUrl) { $demoApiUrl } else { "Not available" })
+- **Monitoring Dashboard:** $(if ($dashboardUrl) { $dashboardUrl } else { "Not available" })
 
 ## Next Steps
 
@@ -648,9 +648,9 @@ npm run rollback
         $demoApiUrl = aws cloudformation describe-stacks --stack-name "LanguagePeer-Demo-$Environment" --region $Region --query 'Stacks[0].Outputs[?OutputKey==`DemoApiUrl`].OutputValue' --output text 2>$null
         $dashboardUrl = aws cloudformation describe-stacks --stack-name "LanguagePeer-Monitoring-$Environment" --region $Region --query 'Stacks[0].Outputs[?OutputKey==`DashboardUrl`].OutputValue' --output text 2>$null
         
-        Write-Host "Demo Website: $($demoUrl ?? 'Not available')" -ForegroundColor Cyan
-        Write-Host "Demo API: $($demoApiUrl ?? 'Not available')" -ForegroundColor Cyan
-        Write-Host "Monitoring: $($dashboardUrl ?? 'Not available')" -ForegroundColor Cyan
+        Write-Host "Demo Website: $(if ($demoUrl) { $demoUrl } else { 'Not available' })" -ForegroundColor Cyan
+        Write-Host "Demo API: $(if ($demoApiUrl) { $demoApiUrl } else { 'Not available' })" -ForegroundColor Cyan
+        Write-Host "Monitoring: $(if ($dashboardUrl) { $dashboardUrl } else { 'Not available' })" -ForegroundColor Cyan
     }
     catch {
         Write-Host "URLs: Could not retrieve" -ForegroundColor Yellow
@@ -701,7 +701,7 @@ function Main {
 
 # Show usage if help is requested
 if ($args -contains "--help" -or $args -contains "-h") {
-    Write-Host "Usage: .\auto-deploy.ps1 [-Environment <environment>] [-ForceDeploy <bool>] [-Region <region>]"
+    Write-Host "Usage: .\auto-deploy.ps1 [-Environment environment] [-ForceDeploy bool] [-Region region]"
     Write-Host ""
     Write-Host "Parameters:"
     Write-Host "  -Environment    Target environment (development|staging|production) [default: development]"

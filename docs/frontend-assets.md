@@ -118,6 +118,23 @@ public/
 }
 ```
 
+## CSS Architecture
+
+### Component Styling
+- **Modular CSS**: Each component has its own CSS file
+- **BEM Methodology**: Block-Element-Modifier naming convention
+- **Z-Index Management**: Layered approach for proper element stacking
+  - Base content: z-index 1-99
+  - Navigation/headers: z-index 100-999
+  - Modals/overlays: z-index 1000-9999
+  - Critical alerts: z-index 10000+
+
+### Modal Styling Standards
+- **Authentication Modal**: z-index 9999 for proper layering
+- **Overlay Background**: Semi-transparent backdrop
+- **Click-outside Handling**: Proper event propagation
+- **Responsive Design**: Mobile-first approach
+
 ## Best Practices
 
 ### Current Implementation
@@ -126,6 +143,7 @@ public/
 - ✅ Voice-first focus
 - ✅ Mobile-optimized
 - ✅ CDN-friendly
+- ✅ Proper z-index layering for modals
 
 ### Future Considerations
 - 🔄 Add branded icons for professional appearance

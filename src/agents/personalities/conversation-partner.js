@@ -240,7 +240,7 @@ Remember: You're not a teacher, you're a conversation partner. Make it feel like
             " How do you feel about that?",
             " Have you experienced something similar?",
             " What's your take on it?",
-            " Does that make sense to you?",
+            " Can you relate to that?",
             " What do you think?",
             " Can you relate to that?",
             " Have you been in that situation before?"

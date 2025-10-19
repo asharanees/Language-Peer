@@ -16,12 +16,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 }) => {
   const [mode, setMode] = useState<'login' | 'signup'>(initialMode);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    targetLanguage: 'English',
-    nativeLanguage: 'Spanish',
-    currentLevel: 'beginner'
+    username: '',
+    password: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,9 +31,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     try {
       if (mode === 'login') {
-        await login(formData.email, formData.password);
+        await login(formData.username, formData.password);
       } else {
-        await register(formData);
+        await register(formData.username, formData.password);
       }
       onClose();
     } catch (err) {
@@ -65,31 +61,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
-          {mode === 'signup' && (
-            <div className="form-group">
-              <label htmlFor="name">Full Name</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                placeholder="Enter your full name"
-              />
-            </div>
-          )}
-
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="username">Username</label>
             <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
               onChange={handleInputChange}
               required
-              placeholder="Enter your email"
+              placeholder="Enter your username"
             />
           </div>
 
@@ -106,58 +87,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               minLength={6}
             />
           </div>
-
-          {mode === 'signup' && (
-            <>
-              <div className="form-group">
-                <label htmlFor="targetLanguage">Language to Learn</label>
-                <select
-                  id="targetLanguage"
-                  name="targetLanguage"
-                  value={formData.targetLanguage}
-                  onChange={handleInputChange}
-                >
-                  <option value="English">English</option>
-                  <option value="Spanish">Spanish</option>
-                  <option value="French">French</option>
-                  <option value="German">German</option>
-                  <option value="Italian">Italian</option>
-                  <option value="Portuguese">Portuguese</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="nativeLanguage">Native Language</label>
-                <select
-                  id="nativeLanguage"
-                  name="nativeLanguage"
-                  value={formData.nativeLanguage}
-                  onChange={handleInputChange}
-                >
-                  <option value="Spanish">Spanish</option>
-                  <option value="English">English</option>
-                  <option value="French">French</option>
-                  <option value="German">German</option>
-                  <option value="Italian">Italian</option>
-                  <option value="Portuguese">Portuguese</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="currentLevel">Current Level</label>
-                <select
-                  id="currentLevel"
-                  name="currentLevel"
-                  value={formData.currentLevel}
-                  onChange={handleInputChange}
-                >
-                  <option value="beginner">Beginner</option>
-                  <option value="intermediate">Intermediate</option>
-                  <option value="advanced">Advanced</option>
-                </select>
-              </div>
-            </>
-          )}
 
           {error && <div className="auth-error">{error}</div>}
 

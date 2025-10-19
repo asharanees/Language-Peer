@@ -88,13 +88,13 @@ export class BedrockService {
   }
 
   /**
-   * Get model-specific configuration
+   * Get model-specific configuration optimized for natural conversation
    */
   private getModelConfig(modelId: string, context: ConversationContext): BedrockModelConfig {
     const baseConfig = {
       modelId,
-      maxTokens: 1000,
-      temperature: 0.7,
+      maxTokens: 150, // Reduced for concise responses
+      temperature: 0.8, // Higher for more natural language
       topP: 0.9
     };
 
@@ -102,32 +102,32 @@ export class BedrockService {
       case BEDROCK_MODELS.NOVA_PREMIER:
         return {
           ...baseConfig,
-          temperature: 0.8, // More creative for complex conversations
-          maxTokens: 2000,
-          stopSequences: ['Student:', 'Tutor:']
+          temperature: 0.9, // High creativity for natural conversation
+          maxTokens: 200, // Slightly higher for complex topics
+          stopSequences: ['Student:', 'Tutor:', '\n\n', 'Human:', 'Assistant:']
         };
         
       case BEDROCK_MODELS.NOVA_PRO:
         return {
           ...baseConfig,
-          temperature: 0.7, // Balanced for general conversation
-          maxTokens: 1500,
-          stopSequences: ['Student:', 'Tutor:']
+          temperature: 0.8, // Balanced creativity
+          maxTokens: 150, // Concise responses
+          stopSequences: ['Student:', 'Tutor:', '\n\n', 'Human:', 'Assistant:']
         };
         
       case BEDROCK_MODELS.NOVA_LITE:
         return {
           ...baseConfig,
-          temperature: 0.6, // More focused for beginners
-          maxTokens: 1000,
-          stopSequences: ['Student:', 'Tutor:']
+          temperature: 0.7, // Focused but natural
+          maxTokens: 120, // Very concise for beginners
+          stopSequences: ['Student:', 'Tutor:', '\n\n', 'Human:', 'Assistant:']
         };
         
       case BEDROCK_MODELS.LLAMA_3_1_70B:
         return {
           ...baseConfig,
-          temperature: 0.6, // Backup model configuration
-          maxTokens: 1200
+          temperature: 0.8,
+          maxTokens: 150
         };
         
       default:

@@ -258,6 +258,40 @@
   font-size: 1.125rem;
 }
 
+.progress-loading,
+.progress-error {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.progress-loading h1,
+.progress-error h1 {
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+.progress-loading p,
+.progress-error p {
+  margin-bottom: 2rem;
+  color: #6b7280;
+  font-size: 1.125rem;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e5e7eb;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 @media (max-width: 768px) {
   .progress-page {
     padding: 1rem 0;

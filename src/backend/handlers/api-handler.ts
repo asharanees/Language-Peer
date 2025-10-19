@@ -6,6 +6,10 @@
  * mock implementations of conversation endpoints and agent responses.
  */
 
+import { request } from "http";
+
+import { request } from "http";
+
 /**
  * AWS API Gateway proxy event structure
  * Contains HTTP request details forwarded from API Gateway
@@ -39,8 +43,17 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS'
 };
 
-export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  console.log('API Handler - Event:', JSON.stringify(event, null, 2));
+/**
+ * Main Lambda handler for API Gateway proxy integration
+ 
+ * Routes incoming HTTP resed on
+ * path and method. Includes CORS suppoing.
+ * 
+ * @param event - API details
+ * @returns Promise resolviesponse
+ */
+export{t> => sultewayProxyRemise<APIGat): ProwayProxyEvente: APIGac (eventndler = asynconst ha th rresult wiy proxy atewa API Gtong ing request ontaint cproxy evenay tewGaror handltralized errt and cenons baer functiate handlo approprits tques *
+  console.log('API Handler - Event (Optimized v2):', JSON.stringify(event, null, 2));
 
   // Handle CORS preflight
   if (event.httpMethod === 'OPTIONS') {
@@ -102,12 +115,12 @@ const handleHealthCheck = (): APIGatewayProxyResult => {
     body: JSON.stringify({
       status: 'healthy',
       timestamp: new Date().toISOString(),
-      version: '1.0.0'
+      version: '1.0.1-optimized'
     })
   };
 };
 
-// Handle conversation messages
+// Handle conversation messages using optimized agents
 const handleConversation = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   if (!event.body) {
     return {
@@ -128,20 +141,8 @@ const handleConversation = async (event: APIGatewayProxyEvent): Promise<APIGatew
   }
 
   try {
-    // Generate simple mock response
-    const response = {
-      content: generateMockResponse(message, agentPersonality)
-    };
-
-    // Generate mock feedback
-    const feedback = {
-      grammarScore: Math.floor(Math.random() * 30) + 70,
-      fluencyScore: Math.floor(Math.random() * 25) + 75,
-      vocabularyScore: Math.floor(Math.random() * 20) + 80,
-      suggestions: ['Try using more varied vocabulary', 'Consider using transition words'],
-      corrections: [],
-      encouragement: "You're doing great! Keep practicing and you'll see improvement."
-    };
+    // Use optimized agent response generation
+    const response = await generateOptimizedResponse(message, agentPersonality, sessionId, userId);
 
     return {
       statusCode: 200,
@@ -149,7 +150,14 @@ const handleConversation = async (event: APIGatewayProxyEvent): Promise<APIGatew
       body: JSON.stringify({
         response: response.content,
         sessionId: sessionId || `session-${Date.now()}`,
-        feedback
+        feedback: response.feedback || {
+          grammarScore: Math.floor(Math.random() * 30) + 70,
+          fluencyScore: Math.floor(Math.random() * 25) + 75,
+          vocabularyScore: Math.floor(Math.random() * 20) + 80,
+          suggestions: ['Try using more varied vocabulary', 'Consider using transition words'],
+          corrections: [],
+          encouragement: "You're doing great! Keep practicing and you'll see improvement."
+        }
       })
     };
   } catch (error) {
@@ -162,32 +170,41 @@ const handleConversation = async (event: APIGatewayProxyEvent): Promise<APIGatew
   }
 };
 
-// Generate mock response for testing
-const generateMockResponse = (message: string, agentPersonality: string): string => {
+// Generate optimized response following our optimization rules
+const generateOptimizedResponse = async (message: string, agentPersonality: string, sessionId: string, userId: string) => {
+  // For now, use optimized mock responses that follow our rules
+  // TODO: Integrate with actual agent classes once bundling is resolved
+  return {
+    content: generateOptimizedMockResponse(message, agentPersonality)
+  };
+};
+
+// Optimized mock response as fallback (follows our optimization rules)
+const generateOptimizedMockResponse = (message: string, agentPersonality: string): string => {
   const responses: Record<string, string[]> = {
     'friendly-tutor': [
-      "Great job!",
-      "Nice work!",
-      "Good effort!",
-      "Well done!"
+      "Nice! That's a great start. Want to try another one?",
+      "Great effort! I love how you're practicing. What else would you like to work on?",
+      "You're doing awesome! How about we try something a bit different?",
+      "That's wonderful! I can see you're really thinking about it. Ready for more?"
     ],
     'strict-teacher': [
-      "I notice an error.",
-      "Pay attention here.",
-      "Focus on accuracy.",
-      "Remember the rule."
+      "Good try! Let's fix that grammar. Can you spot the error?",
+      "I see the issue. Remember the rule about past tense. Try again?",
+      "Focus on the verb form here. What should it be?",
+      "Correct the subject-verb agreement. Do you see it?"
     ],
     'conversation-partner': [
-      "That's interesting!",
-      "I get it.",
-      "Sounds cool!",
-      "Nice story!"
+      "Oh cool! I totally get what you mean. What happened next?",
+      "That's awesome! I've been there too. How'd you feel about it?",
+      "Really? That sounds interesting! Tell me more about that.",
+      "Nice! I love hearing about that stuff. What's your favorite part?"
     ],
     'pronunciation-coach': [
-      "Good try!",
-      "Better!",
-      "Nice improvement!",
-      "Getting clearer!"
+      "Good attempt! Try emphasizing the first syllable. Ready?",
+      "Better! Now let's work on that 'th' sound. Can you try it?",
+      "Nice improvement! Focus on the vowel sound here. Go for it!",
+      "Great progress! Let's practice that tricky consonant. You got this!"
     ]
   };
 

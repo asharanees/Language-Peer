@@ -1,8 +1,22 @@
 # Authentication Feature Documentation Update Summary
 
+## Recent Changes (Latest Update)
+
+**Date**: Current
+**Change**: AuthModal component simplified to minimal authentication form
+
+**What Changed**:
+- Removed `name` field from registration form
+- Removed `targetLanguage` selection dropdown
+- Removed `nativeLanguage` selection dropdown  
+- Removed `currentLevel` proficiency selection
+- Form now only collects `email` and `password`
+
+**Impact**: Significantly reduced signup friction while maintaining core authentication functionality. Language preferences can be collected later during onboarding flow.
+
 ## Overview
 
-This document summarizes the documentation updates made to reflect the new authentication system implemented in LanguagePeer, specifically the `AuthModal` component and related authentication features.
+This document summarizes the documentation updates made to reflect the authentication system implemented in LanguagePeer, specifically the `AuthModal` component and related authentication features.
 
 ## Files Updated
 
@@ -27,20 +41,19 @@ This document summarizes the documentation updates made to reflect the new authe
 
 **New Endpoints Documented:**
 ```http
-POST /auth/register - User registration with language preferences
+POST /auth/register - User registration (simplified to email/password only)
 POST /auth/login - User authentication
 ```
 
-**New Features:**
-- Language selection options (6 target languages, 6 native languages)
-- Proficiency level selection (beginner, intermediate, advanced)
+**Updated Features:**
+- Simplified registration endpoint (removed language preferences)
 - AuthModal component props and functionality
 - JWT token management and security features
 
 ### 3. docs/requirements.md
 **New Functional Requirements Added:**
 - **FR5: User Authentication and Profile Management**
-  - FR5.1: User Registration and Login
+  - FR5.1: User Registration and Login (simplified)
   - FR5.2: Personalized User Profiles
 
 **Updated Non-Functional Requirements:**
@@ -48,40 +61,39 @@ POST /auth/login - User authentication
 - Added JWT token-based session management
 - Included cross-device authentication synchronization
 
-### 4. docs/authentication-guide.md (New File)
-**Comprehensive New Documentation:**
+### 4. docs/authentication-guide.md
+**Comprehensive Documentation with Recent Updates:**
 - Complete authentication system overview
-- Language support details
-- User interface documentation
+- **Updated**: Simplified registration flow documentation
+- User interface documentation reflecting minimal form
 - Technical implementation details
 - Security features and best practices
 - User experience guidelines
 - Error handling and troubleshooting
 - Future enhancement roadmap
 
-**Key Sections:**
-- Authentication Modal component documentation
-- Registration and login flows
+**Key Sections Updated:**
+- Authentication Modal component documentation (simplified form)
+- Registration flow (email/password only)
 - Security implementation details
 - Mobile experience optimization
 - Integration with learning features
 
-### 5. .kiro/specs/language-peer/design.md
+### 5. docs/authentication-simplified.md
+**Latest Updates:**
+- Documented the simplified form state structure
+- Added note about removed fields
+- Updated component change log
+- Clarified current vs. future authentication approach
+
+### 6. .kiro/specs/language-peer/design.md
 **Architecture Updates:**
 - Updated API Gateway section to include "Authentication & User Management"
 - Enhanced UserProfile data model with authentication fields
 - Added new Authentication Data Models section
 - Included Authentication Service component documentation
 
-**New Components:**
-```typescript
-interface AuthenticationService
-interface AuthenticationModal
-interface RegistrationRequest
-interface AuthenticationResponse
-```
-
-### 6. .kiro/specs/language-peer/tasks.md
+### 7. .kiro/specs/language-peer/tasks.md
 **Task Updates:**
 - Updated section 5 title to "Build user authentication and progress tracking"
 - Added new task 5.0: "Implement user authentication system"
@@ -90,17 +102,18 @@ interface AuthenticationResponse
 
 ## Authentication System Features Documented
 
-### Core Features
-1. **Dual-Mode Authentication Modal**
+### Core Features (Current State)
+1. **Simplified Authentication Modal**
    - Seamless switching between login and signup
-   - Form validation with real-time feedback
+   - Minimal form validation (email format, password length)
    - Responsive design for all devices
+   - **Updated**: Removed language preference fields
 
-2. **User Registration**
-   - Personal information collection (name, email, password)
-   - Language preference selection (target and native languages)
-   - Proficiency level assessment
+2. **User Registration (Simplified)**
+   - Essential information collection (email, password only)
    - Secure account creation with JWT tokens
+   - **Removed**: Language preference selection during signup
+   - **Removed**: Proficiency level assessment during signup
 
 3. **User Login**
    - Email/password authentication
@@ -114,7 +127,7 @@ interface AuthenticationResponse
    - Input validation and sanitization
    - HTTPS-only authentication
 
-### Language Support
+### Future Language Support (Post-Signup)
 **Target Languages:** English, Spanish, French, German, Italian, Portuguese
 **Native Languages:** Spanish, English, French, German, Italian, Portuguese
 **Proficiency Levels:** Beginner, Intermediate, Advanced
@@ -126,7 +139,7 @@ interface AuthenticationResponse
 - AWS Lambda authentication handlers
 - Responsive CSS design with mobile optimization
 
-## Component Structure
+## Component Structure (Updated)
 
 ### AuthModal Component
 ```typescript
@@ -135,11 +148,17 @@ interface AuthModalProps {
   onClose: () => void;
   initialMode?: 'login' | 'signup';
 }
+
+// Simplified form state
+const [formData, setFormData] = useState({
+  email: '',
+  password: ''
+});
 ```
 
 ### Key Features
-- Form state management
-- Input validation (email format, password length)
+- Simplified form state management
+- Basic input validation (email format, password length)
 - API integration with error handling
 - Loading states and user feedback
 - Mode switching between login/signup
@@ -161,14 +180,14 @@ interface AuthModalProps {
    - Input validation and sanitization
    - XSS and injection prevention
 
-## User Experience Documentation
+## User Experience Documentation (Updated)
 
-### Registration Flow
+### Registration Flow (Simplified)
 1. Welcome screen with clear call-to-action
-2. Step-by-step form completion
-3. Language preference selection
-4. Instant validation feedback
-5. Immediate access to personalized features
+2. Minimal form completion (email + password only)
+3. Instant validation feedback
+4. Immediate access to core features
+5. **Future**: Language preferences collected during onboarding
 
 ### Login Flow
 1. Simple email/password form
@@ -185,6 +204,7 @@ interface AuthModalProps {
 ## Future Enhancements Documented
 
 ### Planned Features
+- Language preference collection during onboarding
 - Social login integration (Google, Facebook, Apple)
 - Two-factor authentication
 - Password recovery system
@@ -200,9 +220,9 @@ interface AuthModalProps {
 ## Testing Documentation
 
 ### Test Coverage Areas
-- AuthModal component functionality
+- AuthModal component functionality (simplified form)
 - JWT token generation and validation
-- User registration flow
+- User registration flow (email/password only)
 - Authentication error handling
 - Cross-browser compatibility
 - Mobile responsiveness
@@ -211,13 +231,13 @@ interface AuthModalProps {
 
 ### Learning Features Integration
 - Progress tracking linked to user accounts
-- Agent preferences persistence
-- Learning goal customization
+- Agent preferences persistence (collected post-signup)
+- Learning goal customization (collected post-signup)
 - Session history maintenance
 - Achievement tracking
 
 ### API Integration
-- RESTful authentication endpoints
+- RESTful authentication endpoints (simplified)
 - JWT token validation middleware
 - User profile management APIs
 - Session management services
@@ -229,13 +249,14 @@ interface AuthModalProps {
 3. **User-Focused**: Clear user experience and troubleshooting guidance
 4. **Security-Aware**: Detailed security implementation and best practices
 5. **Future-Ready**: Enhancement roadmap and extensibility considerations
+6. **Current State**: Accurately reflects simplified authentication approach
 
 ## Summary
 
 The authentication system documentation provides a complete reference for:
 - Developers implementing or maintaining the authentication features
-- Users understanding how to create accounts and manage profiles
+- Users understanding how to create accounts with minimal friction
 - Security auditors reviewing authentication implementation
 - Product managers planning future authentication enhancements
 
-All documentation maintains consistency with the existing LanguagePeer documentation style and integrates seamlessly with the voice-first language learning platform's overall architecture and user experience.
+The recent simplification reduces signup friction while maintaining security and provides a foundation for collecting additional profile information during the onboarding process. All documentation maintains consistency with the existing LanguagePeer documentation style and integrates seamlessly with the voice-first language learning platform's overall architecture and user experience.

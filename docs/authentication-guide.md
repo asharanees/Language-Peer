@@ -9,7 +9,7 @@ LanguagePeer includes a comprehensive authentication system that enables users t
 ### 🔑 Core Authentication Features
 
 - **User Registration**: Create accounts with language learning preferences
-- **Secure Login**: Email/password authentication with JWT tokens
+- **Secure Login**: Username/password authentication with JWT tokens
 - **Profile Management**: Personalized learning profiles with progress tracking
 - **Cross-Device Sync**: Access your account from any device
 - **Responsive Design**: Mobile-optimized authentication interface
@@ -55,31 +55,31 @@ interface AuthModalProps {
 #### Key Features:
 - **Dual Mode**: Seamless switching between login and signup
 - **Form Validation**: Real-time validation with helpful error messages
-- **Language Selection**: Intuitive dropdowns for language preferences
+- **Simplified Form**: Minimal data collection (username and password only)
 - **Loading States**: Visual feedback during authentication requests
 - **Responsive Design**: Works perfectly on mobile and desktop
 
+**Recent Update**: Language selection fields have been removed to streamline the signup process.
+
 ### Registration Flow
 
-1. **Personal Information**
-   - Full name (required)
-   - Email address (required, validated)
+**Current Simplified Flow:**
+
+1. **Essential Information Only**
+   - Username (required, unique identifier)
    - Password (required, minimum 6 characters)
 
-2. **Language Preferences**
-   - Target language (language to learn)
-   - Native language (your first language)
-   - Current proficiency level
-
-3. **Account Creation**
+2. **Account Creation**
    - Secure password hashing
-   - Profile creation with preferences
+   - Basic profile creation
    - Automatic login after registration
+
+**Note**: The registration flow has been simplified to reduce friction. Language preferences and detailed profile information can be collected later during onboarding or in profile settings.
 
 ### Login Flow
 
 1. **Credentials**
-   - Email address
+   - Username
    - Password
 
 2. **Authentication**
@@ -131,14 +131,12 @@ POST /auth/register
 Content-Type: application/json
 
 {
-  "name": "John Doe",
-  "email": "user@example.com", 
-  "password": "securepassword",
-  "targetLanguage": "English",
-  "nativeLanguage": "Spanish",
-  "currentLevel": "intermediate"
+  "username": "myusername", 
+  "password": "securepassword"
 }
 ```
+
+**Note**: The registration endpoint has been simplified to only require username and password. Language preferences and profile details are no longer collected during initial signup.
 
 #### Login Endpoint
 ```http
@@ -146,7 +144,7 @@ POST /auth/login
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
+  "username": "myusername",
   "password": "securepassword"
 }
 ```
@@ -176,14 +174,14 @@ Content-Type: application/json
 ### Registration Experience
 
 1. **Welcome Screen**: Clear call-to-action to create account
-2. **Form Completion**: Step-by-step form with helpful labels
-3. **Language Selection**: Easy-to-use dropdowns with clear options
+2. **Form Completion**: Simple form with username and password fields
+3. **Username Selection**: Choose a unique, memorable username
 4. **Instant Feedback**: Real-time validation and error messages
 5. **Success State**: Immediate access to personalized features
 
 ### Login Experience
 
-1. **Quick Access**: Simple email/password form
+1. **Quick Access**: Simple username/password form
 2. **Remember Me**: Persistent sessions for returning users
 3. **Error Handling**: Clear messages for invalid credentials
 4. **Password Recovery**: Future feature for password reset
@@ -220,8 +218,8 @@ Once authenticated, users gain access to:
 ### Common Error Scenarios
 
 #### Registration Errors
-- **Email Already Exists**: Clear message with login option
-- **Invalid Email Format**: Real-time validation feedback
+- **Username Already Exists**: Clear message with alternative suggestions
+- **Invalid Username Format**: Real-time validation feedback
 - **Weak Password**: Password strength requirements displayed
 - **Network Issues**: Retry options and offline indicators
 
@@ -279,10 +277,10 @@ Once authenticated, users gain access to:
 ### Common Issues
 
 **Q: I can't log in with my credentials**
-A: Verify your email and password are correct. Try the "Forgot Password" feature when available.
+A: Verify your username and password are correct. Try the "Forgot Password" feature when available.
 
-**Q: Registration fails with "Email already exists"**
-A: Use the login form instead, or try a different email address.
+**Q: Registration fails with "Username already exists"**
+A: Use the login form instead, or try a different username.
 
 **Q: The authentication modal won't open**
 A: Check your browser's JavaScript settings and try refreshing the page.

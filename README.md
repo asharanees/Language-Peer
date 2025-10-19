@@ -12,6 +12,8 @@
 [![Issues](https://img.shields.io/github/issues/asharanees/language-peer?color=red)](https://github.com/asharanees/language-peer/issues)
 [![Stars](https://img.shields.io/github/stars/asharanees/language-peer?color=gold)](https://github.com/asharanees/language-peer/stargazers)
 [![Forks](https://img.shields.io/github/forks/asharanees/language-peer?color=blue)](https://github.com/asharanees/language-peer/network/members)
+[![Code Size](https://img.shields.io/github/languages/code-size/asharanees/language-peer?color=green)](https://github.com/asharanees/language-peer)
+[![Contributors](https://img.shields.io/github/contributors/asharanees/language-peer?color=orange)](https://github.com/asharanees/language-peer/graphs/contributors)
 
 > A voice-first GenAI application that helps language learners build fluency through natural conversations with autonomous AI agents powered by AWS Bedrock and Strands.
 
@@ -46,7 +48,7 @@ LanguagePeer addresses the common challenges language learners face: finding con
 - 🧠 **Smart Mock Responses**: Context-aware agent personalities that adapt to conversation topics
 - 📊 **Realistic Offline Feedback**: Dynamic scoring and personalized suggestions without API dependency
 - 🎚️ **Voice Control Features**: Stop speaking functionality and agent-specific speech synthesis
-- 🔐 **User Authentication**: Secure login/signup with personalized learning profiles and progress tracking
+- 🔐 **User Authentication**: Username-based secure login/signup with minimal data collection and progress tracking
 
 ## 🏗️ Architecture
 
@@ -220,7 +222,9 @@ Experience LanguagePeer in action:
 - 📈 Progress tracking and analytics dashboard
 - 💬 Offline-first design with automatic text mode fallback
 - 🔄 Works without backend API - local session management and mock responses
-- 🔐 User authentication with personalized learning profiles and language preferences
+- 🔐 Simplified user authentication with minimal signup friction (email/password only)
+- 🚀 **Streamlined User Journey**: Single-click access to conversation practice from homepage
+- 🎯 **Reduced Friction**: Direct navigation to core functionality without unnecessary steps
 
 ### Screenshots
 
@@ -250,7 +254,7 @@ The application uses a minimal asset approach:
 - 📝 [Implementation Tasks](.kiro/specs/language-peer/tasks.md) - Detailed development task breakdown
 - 🚀 [Deployment Guide](docs/deployment-guide.md) - Complete deployment instructions
 - 🔌 [API Documentation](docs/api.md) - Comprehensive REST API reference
-- 🔐 [Authentication Guide](docs/authentication-guide.md) - User authentication and profile management
+- 🔐 [Authentication Guide](docs/authentication-guide.md) - Simplified user authentication system
 - ♿ [Accessibility Features](docs/accessibility-features.md) - Comprehensive accessibility and fallback system
 
 ### Setup and Usage

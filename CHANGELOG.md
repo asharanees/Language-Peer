@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Non-Contextual Questions Issue** - Eliminated generic "Make sense?" questions that were breaking conversation flow
+- **Agent Response Quality** - Reduced engagement question frequency from 90% to 30% and made all questions contextually relevant
+- **Conversation Flow** - Responses now end naturally when appropriate, creating more human-like interactions
+
 ### Added
+- **Username-Based Authentication** - Simplified authentication using username instead of email for improved privacy and user experience
 - **Intelligent Text-to-Speech** - Browser-based TTS with agent-specific voice personalities
 - **Voice Control Features** - Stop speaking functionality and visual speech indicators
 - **TTS Event Handling** - Improved speech completion detection using actual audio events instead of simulated timeouts
@@ -18,10 +24,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Offline-First Architecture** - Complete functionality without backend API dependency
 - **Local Session Management** - Generate session IDs locally without API calls
 - **Enhanced Documentation** - Updated offline-first design and API documentation
+- **Streamlined Homepage Navigation** - Single-click access to conversation practice for improved user experience
 
 ### Changed
+- **AuthModal Component** - Simplified form to use username/password instead of email/password authentication
+- **AuthModal Z-Index** - Increased modal overlay z-index from 1000 to 9999 for proper layering above all UI elements
 - **ConversationInterface Component** - Added TTS functionality with agent-specific voices and speech controls
-- **Agent Initialization** - Automatic TTS playback for agent greetings and responses
+- **Agent Initialization** - Automatic TTS playbook for agent greetings and responses
 - **User Interface** - Added "Stop Speaking" button during TTS playback with visual indicators
 - **TTS Completion Handling** - Removed hardcoded timeout simulation in favor of actual audio event completion
 - **Voice Processing** - Enhanced offline mode with contextual AI responses and TTS support
@@ -29,10 +38,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Feedback Generation** - Realistic scoring based on input analysis and message complexity
 - **Agent Personalities** - Distinct conversation styles and voice characteristics maintained in offline mode
 - **Frontend Assets** - Removed favicon and apple-touch-icon references for simplified deployment
+- **Homepage Call-to-Action** - Simplified navigation by removing "Watch Demo" button and providing direct access to conversation practice
 
 ### Removed
+- **Email Field** - Removed email field from authentication forms in favor of username-based authentication
 - **Favicon References** - Removed `favicon.ico` and `apple-touch-icon` links from index.html
 - **Icon Dependencies** - Simplified asset structure without icon files for faster deployment
+- **Secondary CTA Button** - Removed "Watch Demo" button from homepage to reduce decision paralysis and improve conversion flow
 - **User Experience** - Seamless transition between online and offline modes with audio feedback
 - **Documentation Updates** - Updated README, accessibility features, and offline-first design documentation
 
@@ -42,6 +54,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Feedback Accuracy**: Realistic scoring and suggestions based on message analysis
 - **Reliability**: Application works in any network condition with intelligent fallbacks
 - **Accessibility**: Maintains full functionality regardless of connectivity
+- **Conversion Flow**: Simplified homepage navigation reduces friction and provides direct access to core functionality
+- **User Journey**: Single, clear call-to-action eliminates decision paralysis and improves user engagement
+- **Modal Display**: Authentication modal now properly appears above all other UI elements with improved z-index layering 
 
 ### Features
 - 🤖 **Autonomous AI Agents**: Multiple personalities (Friendly Tutor, Strict Teacher, Conversation Partner, Pronunciation Coach)

@@ -5,10 +5,7 @@ import {
   LanguageAnalysis, 
   ProgressMetrics,
   UserProfile,
-  FeedbackInstance,
-  EmotionalState,
-  FrustrationLevel,
-  MotivationalMessage
+  FeedbackInstance
 } from '@/shared/types';
 
 export interface AgentResponse {
@@ -74,12 +71,15 @@ export abstract class StrandsAgent {
         context
       );
 
+      // Optimize response for natural conversation
+      const optimizedContent = this.optimizeResponseForNaturalConversation(bedrockResponse.content);
+
       // Process and enhance the response
       const response: AgentResponse = {
-        content: bedrockResponse.content,
-        audioInstructions: this.generateAudioInstructions(bedrockResponse.content),
+        content: optimizedContent,
+        audioInstructions: this.generateAudioInstructions(optimizedContent),
         emotionalTone: this.determineEmotionalTone(emotionalState),
-        feedback: await this.generateContextualFeedback(context, bedrockResponse.content)
+        feedback: await this.generateContextualFeedback(context, optimizedContent)
       };
 
       // Add topic suggestion if appropriate
@@ -106,7 +106,7 @@ export abstract class StrandsAgent {
     let engagementIndicators = 0;
 
     for (const message of recentMessages) {
-      if (message.sender === 'user') {
+      if (message.role === 'user') {
         const content = message.content.toLowerCase();
         
         // Frustration indicators
@@ -129,7 +129,7 @@ export abstract class StrandsAgent {
       }
     }
 
-    const totalMessages = recentMessages.filter(m => m.sender === 'user').length || 1;
+    const totalMessages = recentMessages.filter(m => m.role === 'user').length || 1;
     
     return {
       frustrationLevel: Math.min(frustrationIndicators / totalMessages, 1),
@@ -272,20 +272,23 @@ export abstract class StrandsAgent {
     const approachMode = this.conversationState.get('approachMode') || 'default';
     let basePrompt = this.personality.systemPrompt;
     
+    // Add universal conversation optimization rules
+    basePrompt += '\n\nUNIVERSAL RULES - ALWAYS FOLLOW:';
+    basePrompt += '\n- Keep responses to 1-2 sentences maximum';
+    basePrompt += '\n- Sound natural and conversational, not formal';
+    basePrompt += '\n- Use contractions (I\'m, you\'re, that\'s, etc.)';
+    basePrompt += '\n- End with a question or engaging prompt';
+    basePrompt += '\n- React naturally to what the student says';
+    basePrompt += '\n- Keep the conversation flowing smoothly';
+    
     // Add emotional state adaptations
     if (approachMode === 'extra-supportive') {
-      basePrompt += '\n\nIMPORTANT: The student seems frustrated. Be extra patient, encouraging, and break down concepts into smaller, easier steps. Focus on building confidence.';
+      basePrompt += '\n\nSTUDENT STATE: Frustrated - Be extra encouraging and patient. Keep responses simple and positive.';
     } else if (approachMode === 'challenging') {
-      basePrompt += '\n\nIMPORTANT: The student seems confident. You can provide more challenging exercises and advanced concepts while maintaining encouragement.';
+      basePrompt += '\n\nSTUDENT STATE: Confident - You can be more challenging while staying concise and engaging.';
     } else if (approachMode === 'engaging') {
-      basePrompt += '\n\nIMPORTANT: The student seems disengaged. Try to re-engage them with interesting topics, questions, or interactive exercises.';
+      basePrompt += '\n\nSTUDENT STATE: Disengaged - Use exciting topics and questions to re-engage them.';
     }
-    
-    // Add personality-specific instructions
-    basePrompt += `\n\nPersonality Traits: ${this.personality.traits.join(', ')}`;
-    basePrompt += `\nConversation Style: ${this.personality.conversationStyle}`;
-    basePrompt += `\nError Handling Approach: ${this.personality.supportiveApproach.errorHandling}`;
-    basePrompt += `\nEncouragement Frequency: ${this.personality.supportiveApproach.encouragementFrequency}`;
     
     return basePrompt;
   }
@@ -431,5 +434,77 @@ export abstract class StrandsAgent {
    */
   getConversationState(key: string): any {
     return this.conversationState.get(key);
+  }
+
+  /**
+   * Optimize response for natural, concise conversation
+   */
+  protected optimizeResponseForNaturalConversation(content: string): string {
+    let optimized = content.trim();
+
+    // Remove common AI response patterns that sound unnatural
+    optimized = optimized
+      .replace(/^(I understand that|I can see that|I notice that|It seems like|It appears that)/i, '')
+      .replace(/^(Thank you for sharing|Thank you for telling me)/i, '')
+      .replace(/^(That's a great question|That's an interesting point)/i, '')
+      .replace(/^(However,?\s*)/i, '')
+      .trim();
+
+    // Make language more conversational first
+    optimized = optimized
+      .replace(/\bI am\b/g, "I'm")
+      .replace(/\byou are\b/g, "you're")
+      .replace(/\bthat is\b/g, "that's")
+      .replace(/\bit is\b/g, "it's")
+      .replace(/\bwould not\b/g, "wouldn't")
+      .replace(/\bcannot\b/g, "can't")
+      .replace(/\bdo not\b/g, "don't")
+      .replace(/\bdoes not\b/g, "doesn't")
+      .replace(/\bwill not\b/g, "won't")
+      .replace(/\bhave not\b/g, "haven't")
+      .replace(/\bhas not\b/g, "hasn't");
+
+    // Remove overly formal language
+    optimized = optimized
+      .replace(/\bI would like to\b/g, "I'd like to")
+      .replace(/\bI would suggest\b/g, "I'd suggest")
+      .replace(/\bperhaps you could\b/g, "maybe you could")
+      .replace(/\bin order to\b/g, "to")
+      .replace(/\bdue to the fact that\b/g, "because")
+      .replace(/\bfor the purpose of\b/g, "to");
+
+    // AGGRESSIVE: Take only the first sentence for maximum conciseness
+    const firstSentenceMatch = optimized.match(/^[^.!?]*[.!?]/);
+    if (firstSentenceMatch) {
+      optimized = firstSentenceMatch[0].trim();
+    } else {
+      // If no sentence ending found, take first 80 characters and add period
+      optimized = optimized.substring(0, 80).trim();
+      if (!optimized.match(/[.!?]$/)) {
+        optimized += '.';
+      }
+    }
+
+    // Add natural conversation starter occasionally
+    if (Math.random() < 0.5 && !optimized.match(/^(Oh|Yeah|Wow|Nice|Great|Cool|Hey)/i)) {
+      const naturalStarters = ['Nice', 'Great', 'Cool', 'Oh'];
+      const starter = naturalStarters[Math.floor(Math.random() * naturalStarters.length)];
+      optimized = `${starter}! ${optimized}`;
+    }
+
+    // Only add engagement questions when they make contextual sense
+    if (!optimized.match(/[?]$/) && Math.random() < 0.3) {
+      // More natural, contextual engagement based on content
+      if (optimized.toLowerCase().includes('try') || optimized.toLowerCase().includes('practice')) {
+        optimized += ' Want to give it a shot?';
+      } else if (optimized.toLowerCase().includes('good') || optimized.toLowerCase().includes('great')) {
+        optimized += ' Keep it up!';
+      } else if (optimized.toLowerCase().includes('think') || optimized.toLowerCase().includes('idea')) {
+        optimized += ' What are your thoughts?';
+      }
+      // Otherwise, let the response end naturally without forced questions
+    }
+
+    return optimized;
   }
 }
